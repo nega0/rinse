@@ -84,7 +84,7 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.1.1.1 2007-07-16 00:15:42 steve Exp $
+ $Id: rinse,v 1.2 2007-07-16 00:15:57 steve Exp $
 
 =cut
 
@@ -327,7 +327,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.1.1.1 $';
+        my $REVISION      = '$Revision: 1.2 $';
         if ( $REVISION =~ /1.([0-9.]+) / )
         {
             $REVISION = $1;

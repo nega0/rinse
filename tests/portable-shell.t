@@ -10,7 +10,7 @@
 #
 # Steve
 # --
-# $Id: portable-shell.t,v 1.1.1.1 2007-07-16 00:15:42 steve Exp $
+# $Id: portable-shell.t,v 1.2 2007-07-16 00:15:58 steve Exp $
 
 
 use strict;
