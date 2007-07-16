@@ -86,7 +86,7 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.4 2007-07-16 00:29:13 steve Exp $
+ $Id: rinse,v 1.5 2007-07-16 04:13:00 steve Exp $
 
 =cut
 
@@ -137,8 +137,10 @@ my %CONFIG;
 #
 #  Default options.
 #
+$CONFIG{'arch'}      = 'i386';
 $CONFIG{'cache'}     = 1;
 $CONFIG{'cache-dir'} = "/var/cache/rinse/";
+
 
 
 #
@@ -200,6 +202,8 @@ my $mirror = $CONFIG{'mirror'} ||
   getDistributionMirror( $CONFIG{'distribution'} );
 
 
+
+#
 #
 #  Download the packages into the specified directory
 #
@@ -310,6 +314,7 @@ sub parseCommandLineArguments
                "distribution=s",     \$CONFIG{'distribution'},
 
                # Misc options.
+               "arch=s",             \$CONFIG{'arch'},
                "cache=s",            \$CONFIG{'cache'},
                "clean-cache",        \$CONFIG{'clean-cache'},
                "list-distributions", \$CONFIG{'list-distributions'},
@@ -328,7 +333,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.4 $';
+        my $REVISION      = '$Revision: 1.5 $';
         if ( $REVISION =~ /1.([0-9.]+) / )
         {
             $REVISION = $1;
@@ -383,6 +388,23 @@ EOF
 
 EOF
         exit;
+    }
+
+    if ( $CONFIG{'arch'} )
+    {
+        if ( ( $CONFIG{'arch'} ne "i386" ) &&
+             ( $CONFIG{'arch'} ne "amd64" ) )
+        {
+            print <<EOARCH;
+
+  Only two architectures are supported:
+
+   i386
+   amd64
+
+EOARCH
+            exit;
+        }
     }
 }
 
@@ -556,8 +578,7 @@ EOF
     #
     #  Read the file, skipping blank lines and comments
     #
-    my $mirror;
-
+    my %options;
 
     open( FILE, "<", $file ) or die "Failed to open $file - $!";
     foreach my $line ( <FILE> )
@@ -567,21 +588,44 @@ EOF
 
         chomp( $line );
 
-        if ( $line =~ /mirror([ \t]*)=(.*)/ )
+        if ( $line =~ /([^=]+)=([^\n]+)/ )
         {
-            $mirror = $2;
+            my $key = $1;
+            my $val = $2;
 
-            #
-            #  Strip leading and trailing whitespace
-            #
-            $mirror =~ s/^\s+//;
-            $mirror =~ s/\s+$//;
+            # Strip leading and trailing whitespace.
+            $key =~ s/^\s+//;
+            $key =~ s/\s+$//;
+            $val =~ s/^\s+//;
+            $val =~ s/\s+$//;
+
+            $options{$key} = $val;
         }
     }
     close( FILE );
 
-    return( $mirror );
+    #
+    #  Now look for a mirror which matches our arch
+    #
+    if ( $options{'mirror'} . $CONFIG{'arch'} )
+    {
+        return( $options{'mirror'} . $CONFIG{'arch'} );
+    }
+    else
+    {
+        return $options{'mirror'};
+    }
 
+    #
+    #  Broken?
+    #
+    print <<EOF;
+
+  Failed to find a mirror setting in $file.
+
+EOF
+
+    exit;
 }
 
 
@@ -873,6 +917,15 @@ sub postInstallationCustomization
     my( $distribution, $prefix ) = (@_);
 
     my $scriptDir = "/usr/lib/rinse/$distribution/";
+
+    #
+    #  Setup environment for the post-install scripts.
+    #
+    $ENV{'ARCH'}      = $CONFIG{'arch'};
+    $ENV{'mirror'}    = $CONFIG{'mirror'};
+    $ENV{'dist'}      = $CONFIG{'distribution'};
+    $ENV{'directory'} = $CONFIG{'directory'};
+
 
     foreach my $file ( sort( glob( $scriptDir . "/*" ) ) )
     {
