@@ -31,7 +31,7 @@ cat >>${prefix}/etc/yum.conf <<EOF
 name=CentOS-5 - Base
 mirrorlist=http://mirrorlist.centos.org/?release=5&arch=i386&repo=os
 baseurl=http://mirror.centos.org/centos/5/os/i386/
-gpgcheck=1
+gpgcheck=0
 gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-centos4
 priority=1
 protect=1
@@ -41,7 +41,7 @@ protect=1
 name=CentOS-5 - Updates
 mirrorlist=http://mirrorlist.centos.org/?release=5&arch=i386&repo=updates
 baseurl=http://mirror.centos.org/centos/5/updates/i386/
-gpgcheck=1
+gpgcheck=0
 gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-centos4
 priority=1
 protect=1
@@ -51,7 +51,7 @@ protect=1
 name=CentOS-5 - Addons
 mirrorlist=http://mirrorlist.centos.org/?release=5&arch=i386&repo=addons
 baseurl=http://mirror.centos.org/centos/5/addons/i386/
-gpgcheck=1
+gpgcheck=0
 gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-centos4
 priority=1
 protect=1
@@ -61,7 +61,7 @@ protect=1
 name=CentOS-5 - Extras
 mirrorlist=http://mirrorlist.centos.org/?release=5&arch=i386&repo=extras
 baseurl=http://mirror.centos.org/centos/5/extras/i386/
-gpgcheck=1
+gpgcheck=0
 gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-centos4
 priority=1
 protect=1
@@ -71,7 +71,7 @@ protect=1
 name=CentOS-5 - Plus
 mirrorlist=http://mirrorlist.centos.org/?release=5&arch=i386&repo=centosplus
 baseurl=http://mirror.centos.org/centos/5/centosplus/i386/
-gpgcheck=1
+gpgcheck=0
 enabled=0
 gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-centos4
 priority=2
@@ -82,7 +82,7 @@ protect=1
 name=CentOS-5 - Contrib
 mirrorlist=http://mirrorlist.centos.org/?release=5&arch=i386&repo=contrib
 baseurl=http://mirror.centos.org/centos/5/contrib/i386/
-gpgcheck=1
+gpgcheck=0
 enabled=0
 gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-centos4
 priority=2
