@@ -26,11 +26,16 @@ cp /etc/resolv.conf "${prefix}/etc/"
 #
 #  2.  Setup yum.conf
 #
+arch=i386
+if [ $ARCH == "amd64" ] ; then
+    arch=x86_64
+fi
+
 cat >>${prefix}/etc/yum.conf <<EOF
 [base]
 name=CentOS-4.5 - Base
-mirrorlist=http://mirrorlist.centos.org/?release=4.5&arch=i386&repo=os
-baseurl=http://mirror.centos.org/centos/4.5/os/i386/
+mirrorlist=http://mirrorlist.centos.org/?release=4.5&arch=$arch&repo=os
+baseurl=http://mirror.centos.org/centos/4.5/os/$arch/
 gpgcheck=0
 gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-centos4
 priority=1
@@ -39,8 +44,8 @@ protect=1
 #released updates 
 [update]
 name=CentOS-4.5 - Updates
-mirrorlist=http://mirrorlist.centos.org/?release=4.5&arch=i386&repo=updates
-baseurl=http://mirror.centos.org/centos/4.5/updates/i386/
+mirrorlist=http://mirrorlist.centos.org/?release=4.5&arch=$arch&repo=updates
+baseurl=http://mirror.centos.org/centos/4.5/updates/$arch/
 gpgcheck=0
 gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-centos4
 priority=1
@@ -49,8 +54,8 @@ protect=1
 #packages used/produced in the build but not released
 [addons]
 name=CentOS-4.5 - Addons
-mirrorlist=http://mirrorlist.centos.org/?release=4.5&arch=i386&repo=addons
-baseurl=http://mirror.centos.org/centos/4.5/addons/i386/
+mirrorlist=http://mirrorlist.centos.org/?release=4.5&arch=$arch&repo=addons
+baseurl=http://mirror.centos.org/centos/4.5/addons/$arch/
 gpgcheck=0
 gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-centos4
 priority=1
@@ -59,8 +64,8 @@ protect=1
 #additional packages that may be useful
 [extras]
 name=CentOS-4.5 - Extras
-mirrorlist=http://mirrorlist.centos.org/?release=4.5&arch=i386&repo=extras
-baseurl=http://mirror.centos.org/centos/4.5/extras/i386/
+mirrorlist=http://mirrorlist.centos.org/?release=4.5&arch=$arch&repo=extras
+baseurl=http://mirror.centos.org/centos/4.5/extras/$arch/
 gpgcheck=0
 gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-centos4
 priority=1
@@ -69,8 +74,8 @@ protect=1
 #additional packages that extend functionality of existing packages
 [centosplus]
 name=CentOS-4.5 - Plus
-mirrorlist=http://mirrorlist.centos.org/?release=4.5&arch=i386&repo=centosplus
-baseurl=http://mirror.centos.org/centos/4.5/centosplus/i386/
+mirrorlist=http://mirrorlist.centos.org/?release=4.5&arch=$arch&repo=centosplus
+baseurl=http://mirror.centos.org/centos/4.5/centosplus/$arch/
 gpgcheck=0
 enabled=0
 gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-centos4
@@ -80,8 +85,8 @@ protect=1
 #contrib - packages by Centos Users
 [contrib]
 name=CentOS-4.5 - Contrib
-mirrorlist=http://mirrorlist.centos.org/?release=4.5&arch=i386&repo=contrib
-baseurl=http://mirror.centos.org/centos/4.5/contrib/i386/
+mirrorlist=http://mirrorlist.centos.org/?release=4.5&arch=$arch&repo=contrib
+baseurl=http://mirror.centos.org/centos/4.5/contrib/$arch/
 gpgcheck=0
 enabled=0
 gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-centos4

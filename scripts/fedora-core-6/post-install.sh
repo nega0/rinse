@@ -47,6 +47,11 @@ done
 #
 #  3.  Ensure that Yum has a working configuration file.
 #
+arch=i386
+if [ $ARCH == "amd64" ] ; then
+    arch=x86_64
+fi
+
 echo "  Creating yum.conf"
 cat > ${prefix}/etc/yum.conf <<EOF
 [main]
@@ -63,11 +68,11 @@ assumeyes=1
 
 [core]
 name=core
-mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=core-6&arch=i386
+mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=core-6&arch=$arch
 
 [updates-released]
 name=updates
-mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=updates-released-fc6&arch=i386
+mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=updates-released-fc6&arch=$arch
 EOF
 
 
