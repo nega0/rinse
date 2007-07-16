@@ -3,7 +3,7 @@
 #
 # Steve
 # --
-# $Id: Makefile,v 1.2 2007-07-16 00:15:57 steve Exp $
+# $Id: Makefile,v 1.3 2007-07-16 03:56:02 steve Exp $
 #
 
 
@@ -36,6 +36,9 @@ default:
 clean:
 	@find . -name '*~' -delete
 	@find . -name '.#*' -delete
+	@find . -name 'build-stamp' -delete
+	@find . -name 'configure-stamp' -delete
+	@if [ -d debian/rinse ]; then rm -rf debian/rinse; fi
 
 
 
@@ -50,6 +53,7 @@ fixupperms:
 #  Install software
 #
 install: fixupperms
+	mkdir -p ${PREFIX}/etc/bash_completion.d
 	mkdir -p ${PREFIX}/etc/rinse
 	mkdir -p ${PREFIX}/usr/bin
 	mkdir -p ${PREFIX}/usr/lib/rinse
@@ -59,7 +63,7 @@ install: fixupperms
 	cp etc/*.packages ${PREFIX}/etc/rinse
 	cp etc/*.conf     ${PREFIX}/etc/rinse
 	for i in scripts/*/; do mkdir -p ${PREFIX}/usr/lib/rinse/`basename $$i`; cp $$i/*.sh  ${PREFIX}/usr/lib/rinse/`basename $$i` ; done
-	if [ -d /etc/bash_completion.d/ ]; then cp misc/rinse  /etc/bash_completion.d/ ; fi
+	cp misc/rinse ${PREFIX}/etc/bash_completion.d
 
 
 #
