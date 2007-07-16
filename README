@@ -1,0 +1,39 @@
+
+
+Rinse
+-----
+
+  The rinse utility is designed to install an RPM-based distribution
+ within a directory.   The purpose and usage are analagous to the
+ 'debootstrap' utility familiar to users of Debian GNU/Linux.
+
+  So far only i386 is supported, but AMD-64 support is pending.
+
+
+Rationale
+---------
+
+  This tool is being developed primarily for use by my Xen-Tools
+ package; such that new Xen guests may be created of RPM-based
+ distributions.
+
+  RPMStrap is the common solution to this problem, however it
+ is rarely successfull.
+
+
+Supported Distributions
+-----------------------
+
+  So far the following distributions are supported, more
+ may be added in the future:
+
+     *  CentOS
+        - 4.4 & 5.0
+
+     *  Fedora Core
+        - 6
+
+
+Steve
+--
+$Id: README,v 1.1.1.1 2007-07-16 00:15:42 steve Exp $

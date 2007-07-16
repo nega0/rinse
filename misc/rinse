@@ -1,0 +1,32 @@
+#
+#  Bash command line completion for rinse
+#
+function _rinse()
+{
+    local cur prev opts vgs
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    # Determine arguments dynamically.  Avoids out-of-dateness.
+    opts=$(rinse  --help|grep -- --|awk '{print $1}'|grep -- -- | sort -u)
+
+    case "$prev" in
+	--cache)
+	    COMPREPLY=( $( compgen -W '0 1'  -- "${COMP_WORDS[COMP_CWORD]}" ) )
+	    return 0
+	    ;;
+	--distribution)
+	    dists=$(for x in `ls -1 /etc/rinse/*.conf 2>/dev/null`; do  i=`basename $x`;  echo ${i/.conf/} ; done )
+	    COMPREPLY=( $( compgen -W '${dists}'  -- "${COMP_WORDS[COMP_CWORD]}" ) )
+	    return 0
+	    ;;
+    esac
+
+    if [[ ${cur} == -* ]]; then
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        return 0
+    fi
+}
+complete -F _rinse rinse
+

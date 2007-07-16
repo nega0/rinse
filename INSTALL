@@ -1,0 +1,28 @@
+
+
+Installation
+------------
+
+  Installing this program, from source, should be as simple as running:
+
+             make install
+
+  To remove, please run:
+
+             make uninstall
+
+
+Requirements
+------------
+
+  The requirements of this program are minimal and can be installed
+ by:
+
+   apt-get update
+   apt-get install rpm alien wget
+
+
+
+Steve
+-- 
+$Id: INSTALL,v 1.1.1.1 2007-07-16 00:15:42 steve Exp $

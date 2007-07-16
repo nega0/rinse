@@ -1,0 +1,981 @@
+#!/usr/bin/perl -w
+
+=head1 NAME
+
+rinse - RPM Installation Entity.
+
+=head1 SYNOPSIS
+
+  rinse [options]
+
+  Help Options:
+   --help     Show help information.
+   --manual   Read the manual for this script.
+   --version  Show the version information and exit.
+
+  Mandatory Options:
+   --directory    The directory to install the distribution within.
+   --distribution The distribution to install.
+
+  Misc Options:
+   --cache               Should we use a local cache?  (Default is 1)
+   --clean-cache         Clean our cache of .rpm files.
+   --list-distributions  Show installable distributions.
+
+=cut
+
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--cache>
+Specify whether to cache packages (1) or not (0).
+
+=item B<--directory>
+Specify the directory into which the distribution should be installed.
+
+=item B<--distribution>
+Specify the distribution to be installed.
+
+=item B<--help>
+Show help information.
+
+=item B<--list-distributions>
+Show the distributions which are installable.
+
+=item B<--manual>
+Read the manual for this script.
+
+=item B<--version>
+Show the version number and exit.
+
+
+=back
+
+=cut
+
+
+=head1 DESCRIPTION
+
+  rinse is a simple script which is designed to be able to install
+ a minimal working installation of an RPM-based distribution into
+ a directory.
+
+  The tool is analagous to the standard Debian GNU/Linux debootstrap
+ utility.
+
+=cut
+
+
+
+=head1 TODO
+
+  There are several things which should be done before this tool
+ may be considered a "useful" program.  Minimally we must support
+ the installation of more distributions and also we must support
+ different architectures.
+
+=cut
+
+=head1 AUTHOR
+
+ Steve
+ --
+ http://www.steve.org.uk/
+
+ $Id: rinse,v 1.1.1.1 2007-07-16 00:15:42 steve Exp $
+
+=cut
+
+
+=head1 LICENSE
+
+Copyright (c) 2007 by Steve Kemp.  All rights reserved.
+
+This module is free software;
+you can redistribute it and/or modify it under
+the same terms as Perl itself.
+The LICENSE file contains the full text of the license.
+
+
+=cut
+
+
+
+#
+#  Good practise
+#
+use strict;
+use warnings;
+
+#
+#  Standard Perl modules we require
+#
+use English;
+use File::Copy;
+use File::Find;
+use Getopt::Long;
+use Pod::Usage;
+use LWP::UserAgent;
+
+
+
+
+#
+# Release number.
+#
+my $RELEASE = '0.2';
+
+
+#
+#  Our confiuration options.
+#
+my %CONFIG;
+
+#
+#  Default options.
+#
+$CONFIG{'cache'}     = 1;
+$CONFIG{'cache-dir'} = "/var/cache/rinse/";
+
+
+#
+#  Make sure the host is setup correctly, and that all required
+# tools are available.
+#
+testSetup();
+
+
+#
+#  Parse our arguments
+#
+parseCommandLineArguments();
+
+
+#
+#  Handle special case first.
+#
+if ( $CONFIG{'list-distributions'} )
+{
+    listDistributions();
+    exit;
+}
+if ( $CONFIG{'clean-cache'} )
+{
+    cleanCache();
+    exit;
+}
+
+
+#
+#  Sanity check our arguments
+#
+sanityCheckArguments();
+
+
+#
+#  Ensure we're started by root at this point.  This is required
+# to make sure we mount /proc, etc.
+#
+testRootUser();
+
+
+#
+#  Make sure the directory we're installing into exists.
+#
+mkdir $CONFIG{'directory'}, 0755 if ( ! -d $CONFIG{'directory'} );
+
+
+#
+#  Find the list of packages to download
+#
+my @packages = getDistributionPackageList( $CONFIG{'distribution'} );
+
+#
+#  Find the mirror, if not specified already.
+#
+my $mirror = $CONFIG{'mirror'} ||
+  getDistributionMirror( $CONFIG{'distribution'} );
+
+
+#
+#  Download the packages into the specified directory
+#
+downloadPackagesToDirectory( $CONFIG{'directory'}, $mirror, @packages );
+
+
+#
+#  Unpack the packages
+#
+unpackPackages( $CONFIG{'directory'} );
+
+
+#
+#  Now run the post-installation customization.
+#
+postInstallationCustomization( $CONFIG{'distribution'}, $CONFIG{'directory'} );
+
+
+#
+#  All done
+#
+print "Installation complete.\n";
+exit;
+
+
+
+
+
+
+
+=begin doc
+
+  This routine is designed to test that the host system we're running
+ upon has all the required binaries present.
+
+  If any are missing then we'll abort.
+
+=end doc
+
+=cut
+
+sub testSetup
+{
+
+    my @required = qw/ alien rpm wget /;
+
+    foreach my $file ( @required )
+    {
+        if ( ( ! -x "/bin/$file" ) &&
+             ( ! -x "/usr/bin/$file" ) )
+        {
+            print "The following (required) binary appears to be missing:\n";
+            print "\t" . $file . "\n";
+            print "Aborting...\n";
+            exit;
+        }
+    }
+}
+
+
+
+=begin doc
+
+  Make sure this script is being run by a user with UID 0.
+
+=end doc
+
+=cut
+
+sub testRootUser
+{
+    if ( $EFFECTIVE_USER_ID != 0 )
+    {
+        print<<E_O_ROOT;
+
+  In order to use this script you must be running with root privileges.
+
+  This is necessary to mount /proc inside the new install and run
+  chroot, etc.
+
+E_O_ROOT
+        exit;
+    }
+}
+
+
+
+=begin doc
+
+  Parse our command line arguments.
+
+=end doc
+
+=cut
+
+sub parseCommandLineArguments
+{
+    my $HELP    = 0;
+    my $MANUAL  = 0;
+    my $VERSION = 0;
+
+    #
+    #  Parse options.
+    #
+    GetOptions(
+               # Main options
+               "directory=s",        \$CONFIG{'directory'},
+               "distribution=s",     \$CONFIG{'distribution'},
+
+               # Misc options.
+               "cache=s",            \$CONFIG{'cache'},
+               "clean-cache",        \$CONFIG{'clean-cache'},
+               "list-distributions", \$CONFIG{'list-distributions'},
+            
+               # Help options
+               "help",         \$HELP,
+               "manual",       \$MANUAL,
+               "verbose",      \$CONFIG{'verbose'},
+               "version",      \$VERSION
+
+              );
+
+    pod2usage(1) if $HELP;
+    pod2usage(-verbose => 2 ) if $MANUAL;
+
+
+    if ( $VERSION )
+    {
+        my $REVISION      = '$Revision: 1.1.1.1 $';
+        if ( $REVISION =~ /1.([0-9.]+) / )
+        {
+            $REVISION = $1;
+        }
+
+        logprint( "rinse release $RELEASE - CVS: $REVISION\n" );
+        exit;
+    }
+}
+
+
+
+=begin doc
+
+  Test that our arguments are sane and sensible.
+
+  Mostly this just means ensuring that mandatory options are present.
+
+=end doc
+
+=cut
+
+sub sanityCheckArguments
+{
+    #
+    #  Distribution is mandatory
+    #
+    if ( ! $CONFIG{'distribution'} )
+    {
+        print <<EOF;
+
+  The name of the distribution to install is mandatory.
+
+  To see all supported distributions run:
+
+$0 --list-distributions
+
+EOF
+        exit;
+    }
+
+
+    #
+    #  Installation root is mandatory
+    #
+    if ( ! $CONFIG{'directory'} )
+    {
+        print <<EOF;
+
+  The directory to install into is mandatory.  Please specify one with
+ --directory
+
+EOF
+        exit;
+    }
+}
+
+
+
+=begin doc
+
+  Show the distributions we are capable of installing.
+
+=end doc
+
+=cut
+
+sub listDistributions
+{
+    my @avail;
+
+    #
+    #  An installable distribution requires both:
+    #
+    #  1.  A package/configuration file.
+    #
+    #  2.  A scripts directory.  (Even if empty!)
+    #
+    foreach my $file ( glob( "/etc/rinse/*.packages" ) )
+    {
+        #
+        #  Get the name - so that we can test for the directory.
+        #
+        if ( $file =~ /^(.*)\/(.*)\.packages$/ )
+        {
+            push @avail, $2 if ( -d "/usr/lib/rinse/" . $2 );
+        }
+    }
+
+    if ( @avail )
+    {
+        print "The following distributions are available:\n";
+        foreach my $a ( @avail )
+        {
+            print "\t$a\n";
+        }
+    }
+}
+
+
+
+=begin doc
+
+  Clean our cache of .rpm files.
+
+=end doc
+
+=cut
+
+sub cleanCache
+{
+    my $dir = $CONFIG{'cache-dir'};
+
+    #
+    #  Nested function to remove .rpm files.
+    #
+    sub removePackages
+    {
+        my $file = $File::Find::name;
+        if ( $file =~ /\.rpm$/ )
+        {
+            $CONFIG{'verbose'} && print "Removing: $file\n";
+            unlink( $file );
+        }
+    }
+
+    #
+    #  Call our function.
+    #
+    find( { wanted => \&removePackages, no_chdir => 1 }, $dir );
+
+}
+
+
+
+=begin doc
+
+  Return the list of packagse which are required for a basic
+ installation of the specified distribution.
+
+  These packages are located in the configuration file in /etc/rinse.
+
+=end doc
+
+=cut
+
+sub getDistributionPackageList
+{
+    my( $distribution ) = (@_);
+
+    my $file = "/etc/rinse/$distribution.packages";
+
+    if ( ! -e $file )
+    {
+        print <<EOF;
+
+  The package list for the distribution $distribution was not found.
+
+  We expected to find:
+
+    $file
+
+  Aborting.
+
+EOF
+        exit;
+    }
+
+    #
+    #  Read the file, skipping blank lines and comments
+    #
+    my @packages;
+
+
+    open( FILE, "<", $file ) or die "Failed to open $file - $!";
+    foreach my $line ( <FILE> )
+    {
+        next if ( !$line );
+        chomp( $line );
+        next if ( $line =~ /^#/ );
+        next if ( !length( $line ) );
+
+        push( @packages, $line );
+    }
+    close( FILE );
+
+    #
+    #  Return the list in a sorted fashion.
+    #
+    return( sort {lc($a) cmp lc($b) } @packages );
+}
+
+
+
+=begin doc
+
+  Find the mirror which should be used for the specified distribution.
+
+=end doc
+
+=cut
+
+sub getDistributionMirror
+{
+    my( $distribution ) = (@_);
+
+    my $file = "/etc/rinse/$distribution.conf";
+
+    if ( ! -e $file )
+    {
+        print <<EOF;
+
+  The configuration file for the distribution $distribution was not found.
+
+  We expected to find:
+
+    $file
+
+  Aborting.
+
+EOF
+        exit;
+    }
+
+    #
+    #  Read the file, skipping blank lines and comments
+    #
+    my $mirror;
+
+
+    open( FILE, "<", $file ) or die "Failed to open $file - $!";
+    foreach my $line ( <FILE> )
+    {
+        next if ( !$line );
+        next if ( $line =~ /^#/ );
+
+        chomp( $line );
+
+        if ( $line =~ /mirror([ \t]*)=(.*)/ )
+        {
+            $mirror = $2;
+
+            #
+            #  Strip leading and trailing whitespace
+            #
+            $mirror =~ s/^\s+//;
+            $mirror =~ s/\s+$//;
+        }
+    }
+    close( FILE );
+
+    return( $mirror );
+
+}
+
+
+
+=begin doc
+
+  Attempt to download each of the named packages from the specified
+ mirror, and place them in the given directory.
+
+  Use the cache unless we're not supposed to.
+
+=end doc
+
+=cut
+
+sub downloadPackagesToDirectory
+{
+    my( $dir, $mirror, @packages ) = ( @_ );
+
+    #
+    #  Cache directory.
+    #
+    my $cache = "$CONFIG{'cache-dir'}/$CONFIG{'distribution'}/";
+
+    #
+    #  Unless we've been told not to then copy packages from
+    # the cache.
+    #
+    if( $CONFIG{'cache'} )
+    {
+        #
+        #  Make sure we have a cache directory.
+        #
+        if ( -d $cache )
+        {
+            $CONFIG{'verbose'} && print "Copying files from cache  $cache\n";
+            copyPackageFiles( $cache, $dir );
+        }
+    }
+
+    #
+    #  Download the index of the mirror, so that we can do the
+    # package matching magic.
+    #
+    my $index = downloadURL( $mirror );
+
+    my %links;
+
+    foreach my $line ( split( /\n/, $index ) )
+    {
+        while ( $line =~ /<a href=\"([^\"]+)\">(.*)/ )
+        {
+            my $link = $1;
+            $line    = $2;
+
+            if ( $link =~ /^(.*)\/(.*)$/ )
+            {
+                $link = $2;
+            }
+            $links{$link} = 1;
+        }
+    }
+
+    #
+    #  Numbers used for the status.
+    #
+    my $count = 0;
+    my $total = $#packages;
+
+    #
+    #  Process each package
+    #
+    foreach my $package ( @packages )
+    {
+        my $found = 0;
+
+        $CONFIG{'verbose'} && print "-Download $package\n";
+
+        #
+        # Find the candidate package to download from our list of links.
+        #
+        foreach my $key ( keys %links )
+        {
+            if ( ! $found )
+            {
+                # Find the 'name' of this package, eg:
+                #
+                # man-pages-fr-2.39-4.fc6.noarch.rpm -> 'man-pages-fr';
+                #
+                my $name = packageNameFromFileName( $key );
+                if ( lc( $name ) eq lc( $package ) )
+                {
+                    $found += 1;
+
+                    print "[$count:$total] Downloading: $key ..        \r";
+
+                    # download - unless already present.
+                    if ( ! -e "$dir/$key" )
+                    {
+                        system( "wget --quiet -O $dir/$key $mirror/$key" );
+                    }
+                }
+            }
+
+        }
+
+        if ( !$found )
+        {
+            print "[Harmless] Failed to find download link for $package\n";
+        }
+
+        $CONFIG{'verbose'} && print "+Download $package\n";
+
+        $count += 1;
+    }
+    print " " x 60 . "\r";
+    print "\n";
+
+    #
+    #  Now update the cache.
+    #
+    if( $CONFIG{'cache'} )
+    {
+        $CONFIG{'verbose'} && print "Copying files to cache  $cache\n";
+
+        #
+        #  Make sure we have a cache directory.
+        #
+        mkdir $cache, 0755 if ( ! -d $cache );
+
+        copyPackageFiles( $dir, $cache );
+    }
+}
+
+
+
+
+=begin doc
+
+  Download the contents of an URL and return it.
+
+=end doc
+
+=cut
+
+sub downloadURL
+{
+    my( $URL ) = ( @_ );
+
+    #
+    #  Create the helper.
+    #
+    my $ua = LWP::UserAgent->new;
+    $ua->timeout(10);
+    $ua->env_proxy;
+
+    #
+    #  Fetch the URI
+    #
+    my $response = $ua->get( $URL );
+
+    #
+    #  If it worked then return it
+    #
+    if ($response->is_success)
+    {
+        return( $response->content );
+    }
+    else
+    {
+        print "Failed to fetch : $URL\n";
+        print  "\t" . $response->status_line . "\n\n";
+        exit;
+    }
+}
+
+
+
+=begin doc
+
+  Unpack each of the RPM files which are contained in the given
+ directory.  This is done in two stages:
+
+   1.  Convert to .tgz
+
+   2.  Unarchive.
+
+=end doc
+
+=cut
+
+sub unpackPackages
+{
+    my( $dir ) = ( @_ );
+
+    #
+    #  Get a sorted list of the RPMs
+    #
+    my @rpms = glob( $dir . "/*.rpm" );
+    @rpms    = sort {lc($a) cmp lc($b) } @rpms;
+
+    #
+    #  For each RPM file: convert to .tgz
+    #
+    foreach my $file ( @rpms )
+    {
+        $CONFIG{'verbose'} && print "-convert $file\n";
+
+        #
+        #  Show status
+        #
+        my $name = $file;
+        if ( $name =~ /(.*)\/(.*)/ )
+        {
+            $name = $2;
+        }
+        print "Converting RPM $name        \r";
+
+        #
+        #  Convert to .tgz
+        #
+        my $cmd = "cd $dir && alien --to-tgz $file";
+        $cmd .= " >/dev/null 2>/dev/null" unless( $CONFIG{'verbose'} );
+        system( $cmd );
+
+        #
+        #  Note:  We leave the .rpm files in the root of the new
+        #        installation directory.  It is assumed the cleanup
+        #        script will tidy these up, or otherwise use them.
+        #
+
+        $CONFIG{'verbose'} && print "+convert $file\n";
+    }
+    print " " x 60 . "\r";
+    print "\n";
+
+    #
+    #  For each .tgz file: unpack
+    #
+    my @tgz = glob( $dir . "/*.tgz" );
+    @tgz    = sort {lc($a) cmp lc($b) } @tgz;
+    foreach my $file ( @tgz )
+    {
+        $CONFIG{'verbose'} && print "-unpack $file\n";
+
+        #
+        #  Show status
+        #
+        my $name = $file;
+        if ( $name =~ /(.*)\/(.*)/ )
+        {
+            $name = $2;
+        }
+        print "Unpacking $name        \r";
+
+        #
+        #  Unpack.
+        #
+        my $cmd = "cd $dir && tar -zxf $file";
+        $cmd .= " >/dev/null 2>/dev/null" unless( $CONFIG{'verbose'} );
+        system( $cmd );
+
+
+
+        #
+        #  Remove
+        #
+        unlink( $file );
+
+        $CONFIG{'verbose'} && print "+unpack $file\n";
+    }
+    print " " x 60 . "\r";
+    print "\n";
+}
+
+
+
+=begin doc
+
+  Run the post-installation customization scripts for the given
+ distribution.
+
+=end doc
+
+=cut
+
+sub postInstallationCustomization
+{
+    my( $distribution, $prefix ) = (@_);
+
+    my $scriptDir = "/usr/lib/rinse/$distribution/";
+
+    foreach my $file ( sort( glob( $scriptDir . "/*" ) ) )
+    {
+        $CONFIG{'verbose'} && print "-script $file\n";
+
+        #
+        #  Report on progress all the time.
+        #
+        my $name = $file;
+        if ( $name =~ /(.*)\/(.*)/ )
+        {
+            $name = $2;
+        }
+        print "Running post-install script $name\n";
+        my $cmd = "$file $prefix";
+        system( $cmd );
+
+        $CONFIG{'verbose'} && print "+script $file\n";
+    }
+}
+
+
+
+=begin doc
+
+  Copy a collection of RPM files from one directory to another.
+
+=end doc
+
+=cut
+
+sub copyPackageFiles
+{
+    my( $src, $dest ) = (@_);
+
+    $CONFIG{'verbose'} && print "- archiving from $src - $dest\n";
+
+    foreach my $file ( sort( glob( $src . "/*.rpm" ) ) )
+    {
+        # strip path.
+        if ( $file =~ /^(.*)\/(.*)$/ )
+        {
+            $file = $2;
+        }
+
+        #
+        # if the file isn't already present in the destination then
+        # copy it there.
+        #
+        if ( ! -e $dest . "/" . $file )
+        {
+            copy( $src  . "/" . $file,
+                  $dest . "/" . $file );
+        }
+    }
+
+    $CONFIG{'verbose'} && print "+ archiving from $src - $dest\n";
+}
+
+
+
+
+=begin doc
+
+  Convert something like:
+
+    compat-gcc-34-c++-3.4.6-4.i386.rpm
+
+  into:
+
+    compat-gcc-34
+
+=end doc
+
+=cut
+
+sub packageNameFromFileName
+{
+    my( $str ) = ( @_ );
+
+    my @parts  = split( /-/, $str );
+
+
+    my $name     = '';
+    my $ver      = '';
+    my $foundver = 0;
+
+    foreach my $t ( @parts )
+    {
+        $foundver = 1 if (( $t =~ /^([0-9bm\.-]+)$/ ) &&
+                          ( $t =~ /\./ ) );
+        if ( $foundver )
+        {
+            $ver = $ver . "-" . $t;
+        }
+        else
+        {
+            $name = $name . "-" . $t;
+        }
+    }
+    $name =~ s/^-//g if ( $name );
+    $ver  =~ s/^-//g if ( $ver );
+
+    return( $name );
+}
+
+

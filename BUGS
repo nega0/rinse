@@ -1,0 +1,14 @@
+
+distribution centos-4 :
+
+[Harmless] Failed to find download link for chkconfigm ..        
+[Harmless] Failed to find download link for e2fsprogs-libs          
+[Harmless] Failed to find download link for initscripts          
+[Harmless] Failed to find download link for iputils ..        
+[Harmless] Failed to find download link for libsysfs           
+[Harmless] Failed to find download link for mcstrans        
+[Harmless] Failed to find download link for opensslpm ..        .        
+[Harmless] Failed to find download link for tzdata                  ..        
+[Harmless] Failed to find download link for udev
+[Harmless] Failed to find download link for util-linux
+[Harmless] Failed to find download link for yum-metadata-parser  
