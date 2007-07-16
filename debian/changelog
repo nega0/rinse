@@ -1,0 +1,6 @@
+rinse (0.2-1) unstable; urgency=low
+
+  * Initial Debian package.
+
+ -- Steve Kemp <steve@steve.org.uk>  Mon, 16 Jul 2007 04:51:46 +0000
+

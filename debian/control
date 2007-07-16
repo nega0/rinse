@@ -1,0 +1,18 @@
+Source: rinse
+Maintainer: Steve Kemp <steve@steve.org.uk>
+Section: admin
+Priority: extra
+Standards-Version: 3.7.2
+Build-Depends: debhelper (>= 4.0.0)
+
+Package: rinse
+Architecture: all
+Depends: wget, rpm, alien
+Description: RPM installation environment
+ rinse is a tool for bootstrapping a basic RPM-based distribution of
+ GNU/Linux.
+ .
+ It is comparibly in purpose to the standard Debian debootstrap utility,
+ but works upon RPM-based distributions instead.
+ .
+ Rinse can setup CentOS 4 + 5, and Fedora Core 6.
