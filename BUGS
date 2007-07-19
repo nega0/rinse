@@ -1,14 +1,33 @@
 
-distribution centos-4 :
 
-[Harmless] Failed to find download link for chkconfigm ..        
-[Harmless] Failed to find download link for e2fsprogs-libs          
-[Harmless] Failed to find download link for initscripts          
-[Harmless] Failed to find download link for iputils ..        
-[Harmless] Failed to find download link for libsysfs           
-[Harmless] Failed to find download link for mcstrans        
-[Harmless] Failed to find download link for opensslpm ..        .        
-[Harmless] Failed to find download link for tzdata                  ..        
-[Harmless] Failed to find download link for udev
-[Harmless] Failed to find download link for util-linux
-[Harmless] Failed to find download link for yum-metadata-parser  
+Reporting Bugs
+--------------
+
+  To report a bug please use the xen-tools mailing list:
+
+        http://xen-tools.org/software/xen-tools/lists.html
+
+  If you're capable of fixing it yourself a patch is appreciated,
+ and a test case would be a useful bonus.
+
+
+Known Bugs
+----------
+
+  The handling of multiple configuration files for the mirror setup
+ is a little crazy.  It probably makes sense to setup:
+
+                /etc/rinse/mirrors.txt
+
+  Then inside that have:
+
+   ..
+   fedora-core-4.i386  = http://.....
+   fedora-core-4.amd64 = http://.....
+   ..
+
+  etc.
+
+
+Steve
+-- 
