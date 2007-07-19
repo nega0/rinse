@@ -7,8 +7,7 @@ Rinse
  within a directory.   The purpose and usage are analagous to the
  'debootstrap' utility familiar to users of Debian GNU/Linux.
 
-  So far only i386 is supported, but AMD-64 support is pending.
-
+  The system supports installation of both i386 and AMD64 systems.
 
 Rationale
 ---------
@@ -31,9 +30,9 @@ Supported Distributions
         - 4.4 & 5.0
 
      *  Fedora Core
-        - 6
+        - 4, 5, & 6
 
 
 Steve
 --
-$Id: README,v 1.2 2007-07-16 00:15:57 steve Exp $
+$Id: README,v 1.3 2007-07-19 20:32:37 steve Exp $
