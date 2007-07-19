@@ -47,7 +47,6 @@ libsysfs
 libtermcap
 libxml2
 libxml2-python
-mcstrans
 mingetty
 mktemp
 module-init-tools
@@ -78,5 +77,4 @@ tzdata
 udev
 util-linux
 yum
-yum-metadata-parser
 zlib

@@ -86,14 +86,16 @@ fi
 mount -o bind /proc ${prefix}/proc
 
 echo "  Bootstrapping yum"
+chroot ${prefix} /sbin/ldconfig 
 chroot ${prefix} /usr/bin/yum install yum 2>/dev/null
 
 
 #
 #  5.  Clean up
 #
-echo "  Cleaing up"
+echo "  Cleaning up"
 chroot ${prefix} /usr/bin/yum clean all
+
 umount ${prefix}/proc
 
 

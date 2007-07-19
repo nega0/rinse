@@ -86,7 +86,7 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.5 2007-07-16 04:13:00 steve Exp $
+ $Id: rinse,v 1.6 2007-07-19 20:30:26 steve Exp $
 
 =cut
 
@@ -115,6 +115,7 @@ use warnings;
 #
 use English;
 use File::Copy;
+use File::Path;
 use File::Find;
 use Getopt::Long;
 use Pod::Usage;
@@ -187,7 +188,13 @@ testRootUser();
 #
 #  Make sure the directory we're installing into exists.
 #
-mkdir $CONFIG{'directory'}, 0755 if ( ! -d $CONFIG{'directory'} );
+if ( ! -d $CONFIG{'directory'} )
+{
+    #
+    # Make the directory, including all required parent(s) directories.
+    #
+    mkpath( $CONFIG{'directory'}, 0, 0755 );
+}
 
 
 #
@@ -198,8 +205,15 @@ my @packages = getDistributionPackageList( $CONFIG{'distribution'} );
 #
 #  Find the mirror, if not specified already.
 #
-my $mirror = $CONFIG{'mirror'} ||
-  getDistributionMirror( $CONFIG{'distribution'} );
+if ( ! $CONFIG{'mirror'} )
+{
+  $CONFIG{'mirror'} = getDistributionMirror( $CONFIG{'distribution'} );
+}
+
+#
+#  Save it away.
+#
+my $mirror = $CONFIG{'mirror'};
 
 
 
@@ -333,7 +347,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.5 $';
+        my $REVISION      = '$Revision: 1.6 $';
         if ( $REVISION =~ /1.([0-9.]+) / )
         {
             $REVISION = $1;
@@ -607,9 +621,9 @@ EOF
     #
     #  Now look for a mirror which matches our arch
     #
-    if ( $options{'mirror'} . $CONFIG{'arch'} )
+    if ( $options{'mirror' . $CONFIG{'arch'}} )
     {
-        return( $options{'mirror'} . $CONFIG{'arch'} );
+        return( $options{'mirror' .$CONFIG{'arch'}} );
     }
     else
     {
@@ -709,14 +723,22 @@ sub downloadPackagesToDirectory
         #
         foreach my $key ( keys %links )
         {
-            if ( ! $found )
+            #
+            #  If we have haven't found the package yet, and the name
+            # of the link is *longer* than the name of the package we're
+            # looking for.
+            #
+            #  (ie. to cope with -$ver.$arch.$rpm).
+            #
+            if ( ( ! $found ) &&
+                 ( length( $key ) > length( $package ) ) )
             {
-                # Find the 'name' of this package, eg:
-                #
-                # man-pages-fr-2.39-4.fc6.noarch.rpm -> 'man-pages-fr';
-                #
-                my $name = packageNameFromFileName( $key );
-                if ( lc( $name ) eq lc( $package ) )
+                # get the substring of the link we've got
+                my $pre = substr( $key, 0, length( $package ) );
+                my $post= substr( $key, length( $package ), 2 );
+
+                if ( ( lc( $pre ) eq lc( $package ) ) &&
+                     $post =~ /-[0-9]/ )
                 {
                     $found += 1;
 

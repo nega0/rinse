@@ -3,7 +3,7 @@
 #
 # Steve
 # --
-# $Id: Makefile,v 1.3 2007-07-16 03:56:02 steve Exp $
+# $Id: Makefile,v 1.4 2007-07-19 20:30:25 steve Exp $
 #
 
 
@@ -62,7 +62,7 @@ install: fixupperms
 	chmod 755 ${PREFIX}/usr/bin/rinse
 	cp etc/*.packages ${PREFIX}/etc/rinse
 	cp etc/*.conf     ${PREFIX}/etc/rinse
-	for i in scripts/*/; do mkdir -p ${PREFIX}/usr/lib/rinse/`basename $$i`; cp $$i/*.sh  ${PREFIX}/usr/lib/rinse/`basename $$i` ; done
+	for i in scripts/*/; do name=`basename $$i`; if [ "$$name" != "CVS" ]; then mkdir -p /usr/lib/rinse/$$name  ; cp $$i/*.sh /usr/lib/rinse/$$name ; fi ; done
 	cp misc/rinse ${PREFIX}/etc/bash_completion.d
 
 
