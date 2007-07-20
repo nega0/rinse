@@ -86,7 +86,7 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.6 2007-07-19 20:30:26 steve Exp $
+ $Id: rinse,v 1.7 2007-07-20 11:24:42 steve Exp $
 
 =cut
 
@@ -127,7 +127,7 @@ use LWP::UserAgent;
 #
 # Release number.
 #
-my $RELEASE = '0.2';
+my $RELEASE = '0.3';
 
 
 #
@@ -347,7 +347,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.6 $';
+        my $REVISION      = '$Revision: 1.7 $';
         if ( $REVISION =~ /1.([0-9.]+) / )
         {
             $REVISION = $1;
