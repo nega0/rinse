@@ -3,7 +3,7 @@
 #
 # Steve
 # --
-# $Id: Makefile,v 1.6 2007-07-20 11:28:13 steve Exp $
+# $Id: Makefile,v 1.7 2007-07-20 16:14:37 steve Exp $
 #
 
 
@@ -28,6 +28,14 @@ default:
 	@echo "  test-verbose - Run the tests, verbosely"
 	@echo "  uninstall    - Uninstall from ${PREFIX}"
 	@echo " "
+
+
+#
+#  Show what has been changed in the local copy vs. the CVS repository.
+#
+diff:
+	cvs diff --unified 2>/dev/null
+
 
 
 #
@@ -94,6 +102,15 @@ test:
 #
 test-verbose:
 	prove --shuffle --verbose tests/
+
+
+#
+#  Update the local copy from the CVS repository.
+#
+#  NOTE: Removes empty local directories.
+#
+update: 
+	cvs -z3 update -A -P -d 2>/dev/null
 
 
 #
