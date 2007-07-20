@@ -1,3 +1,17 @@
+rinse (0.4-1) unstable; urgency=low
+
+  * v0.4 release:
+    - Included a manpage
+    - Work correctly for --arch=amd64
+
+ -- Steve Kemp <steve@steve.org.uk>  Fri, 20 Jul 2007 20:30:58 +0000
+
+rinse (0.3-1) unstable; urgency=low
+
+  * New release.
+
+ -- Steve Kemp <steve@steve.org.uk>  Mon, 16 Jul 2007 04:51:46 +0000
+
 rinse (0.2-1) unstable; urgency=low
 
   * Initial Debian package.
