@@ -3,7 +3,7 @@
 #
 # Steve
 # --
-# $Id: Makefile,v 1.7 2007-07-20 16:14:37 steve Exp $
+# $Id: Makefile,v 1.8 2007-07-20 19:25:38 steve Exp $
 #
 
 
@@ -47,6 +47,7 @@ clean:
 	@find . -name 'build-stamp' -delete
 	@find . -name 'configure-stamp' -delete
 	@if [ -d debian/rinse ]; then rm -rf debian/rinse; fi
+	@if [ -e ./bin/rinse.8.gz ]; then rm -f ./bin/rinse.8.gz; fi
 
 
 
@@ -60,7 +61,7 @@ fixupperms:
 #
 #  Install software
 #
-install: fixupperms
+install: fixupperms install-manpage
 	mkdir -p ${PREFIX}/etc/bash_completion.d
 	mkdir -p ${PREFIX}/etc/rinse
 	mkdir -p ${PREFIX}/usr/bin
@@ -73,6 +74,12 @@ install: fixupperms
 	for i in scripts/*/; do name=`basename $$i`; if [ "$$name" != "CVS" ]; then mkdir -p ${PREFIX}/usr/lib/rinse/$$name  ; cp $$i/*.sh ${PREFIX}/usr/lib/rinse/$$name ; fi ; done
 	cp misc/rinse ${PREFIX}/etc/bash_completion.d
 
+
+install-manpage:
+	pod2man --release=${VERSION} --official --section=8 ./bin/rinse ./bin/rinse.8
+	gzip --force -9 bin/rinse.8
+	-mkdir -p ${PREFIX}/usr/share/man/man8/
+	mv ./bin/rinse.8.gz ${PREFIX}/usr/share/man/man8/
 
 #
 #  Make a new release tarball, and make a GPG signature.
