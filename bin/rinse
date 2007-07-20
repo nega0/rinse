@@ -20,6 +20,7 @@ rinse - RPM Installation Entity.
   Misc Options:
    --arch                Specify the architecture to install.
    --cache               Should we use a local cache?  (Default is 1)
+   --cache-dir           Specify the directory we should use for the cache.
    --clean-cache         Clean our cache of .rpm files.
    --list-distributions  Show installable distributions.
    --print-uris          Only show the RPMs which should be downloaded.
@@ -36,6 +37,9 @@ Specify the architecture to install.  Valid choices are 'amd64' and 'i386' only.
 
 =item B<--cache>
 Specify whether to cache packages (1) or not (0).
+
+=item B<--cache-dir>
+Specify the directory we should use for the cache.
 
 =item B<--clean-cache>
 Remove all cached .rpm files.
@@ -92,7 +96,7 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.13 2007-07-20 21:38:36 steve Exp $
+ $Id: rinse,v 1.14 2007-07-20 21:39:40 steve Exp $
 
 =cut
 
@@ -356,7 +360,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.13 $';
+        my $REVISION      = '$Revision: 1.14 $';
         if ( $REVISION =~ /1.([0-9.]+) / )
         {
             $REVISION = $1;
