@@ -14,12 +14,24 @@ BEGIN{ use_ok( 'English' ); }
 require_ok( 'English' );
 
 
+BEGIN{ use_ok( 'File::Copy' ); }
+require_ok( 'File::Copy' );
+
+
 BEGIN{ use_ok( 'File::Find' ); }
 require_ok( 'File::Find' );
 
 
+BEGIN{ use_ok( 'File::Path' ); }
+require_ok( 'File::Path' );
+
+
 BEGIN{ use_ok( 'Getopt::Long' ); }
 require_ok( 'Getopt::Long' );
+
+
+BEGIN{ use_ok( 'LWP::UserAgent' ); }
+require_ok( 'LWP::UserAgent' );
 
 
 BEGIN{ use_ok( 'Pod::Usage' ); }
