@@ -22,6 +22,7 @@ rinse - RPM Installation Entity.
    --cache               Should we use a local cache?  (Default is 1)
    --clean-cache         Clean our cache of .rpm files.
    --list-distributions  Show installable distributions.
+   --print-uris          Only show the RPMs which should be downloaded.
 
 =cut
 
@@ -53,6 +54,9 @@ Show the distributions which are installable.
 
 =item B<--manual>
 Read the manual for this script.
+
+=item B<--print-uris>
+Only show the files we would download, don't actually do so.
 
 =item B<--version>
 Show the version number and exit.
@@ -88,7 +92,7 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.9 2007-07-20 13:06:45 steve Exp $
+ $Id: rinse,v 1.10 2007-07-20 16:20:36 steve Exp $
 
 =cut
 
@@ -227,6 +231,12 @@ downloadPackagesToDirectory( $CONFIG{'directory'}, $mirror, @packages );
 
 
 #
+#  If we're only printing then exit here.
+#
+exit if ( $CONFIG{'print-uris'} );
+
+
+#
 #  Unpack the packages
 #
 unpackPackages( $CONFIG{'directory'} );
@@ -334,6 +344,7 @@ sub parseCommandLineArguments
                "cache=s",            \$CONFIG{'cache'},
                "clean-cache",        \$CONFIG{'clean-cache'},
                "list-distributions", \$CONFIG{'list-distributions'},
+               "print-uris",         \$CONFIG{'print-uris'},
 
                # Help options
                "help",         \$HELP,
@@ -349,7 +360,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.9 $';
+        my $REVISION      = '$Revision: 1.10 $';
         if ( $REVISION =~ /1.([0-9.]+) / )
         {
             $REVISION = $1;
@@ -620,12 +631,13 @@ EOF
     }
     close( FILE );
 
+
     #
     #  Now look for a mirror which matches our arch
     #
-    if ( $options{'mirror' . $CONFIG{'arch'}} )
+    if ( $options{'mirror' . "." . $CONFIG{'arch'}} )
     {
-        return( $options{'mirror' .$CONFIG{'arch'}} );
+        return( $options{'mirror' . "." . $CONFIG{'arch'}} );
     }
     else
     {
@@ -744,12 +756,19 @@ sub downloadPackagesToDirectory
                 {
                     $found += 1;
 
-                    print "[$count:$total] Downloading: $key ..        \r";
-
-                    # download - unless already present.
-                    if ( ! -e "$dir/$key" )
+                    if ( $CONFIG{'print-uris'} )
                     {
-                        system( "wget --quiet -O $dir/$key $mirror/$key" );
+                        print $mirror . "/" . $key . "\n";
+                    }
+                    else
+                    {
+                        print "[$count:$total] Downloading: $key ..        \r";
+
+                        # download - unless already present.
+                        if ( ! -e "$dir/$key" )
+                        {
+                            system( "wget --quiet -O $dir/$key $mirror/$key" );
+                        }
                     }
                 }
             }
