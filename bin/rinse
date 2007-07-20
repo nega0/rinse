@@ -18,6 +18,7 @@ rinse - RPM Installation Entity.
    --distribution The distribution to install.
 
   Misc Options:
+   --arch                Specify the architecture to install.
    --cache               Should we use a local cache?  (Default is 1)
    --clean-cache         Clean our cache of .rpm files.
    --list-distributions  Show installable distributions.
@@ -28,6 +29,9 @@ rinse - RPM Installation Entity.
 =head1 OPTIONS
 
 =over 8
+
+=item B<--arch>
+Specify the architecture to install.  Valid choices are 'amd64' and 'i386' only.
 
 =item B<--cache>
 Specify whether to cache packages (1) or not (0).
@@ -86,7 +90,7 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.7 2007-07-20 11:24:42 steve Exp $
+ $Id: rinse,v 1.8 2007-07-20 13:05:44 steve Exp $
 
 =cut
 
@@ -347,7 +351,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.7 $';
+        my $REVISION      = '$Revision: 1.8 $';
         if ( $REVISION =~ /1.([0-9.]+) / )
         {
             $REVISION = $1;
@@ -662,7 +666,7 @@ sub downloadPackagesToDirectory
     #
     #  Cache directory.
     #
-    my $cache = "$CONFIG{'cache-dir'}/$CONFIG{'distribution'}/";
+    my $cache = "$CONFIG{'cache-dir'}/$CONFIG{'distribution'}.$CONFIG{'arch'}/";
 
     #
     #  Unless we've been told not to then copy packages from
@@ -675,7 +679,7 @@ sub downloadPackagesToDirectory
         #
         if ( -d $cache )
         {
-            $CONFIG{'verbose'} && print "Copying files from cache  $cache\n";
+            $CONFIG{'verbose'} && print "Copying files from cache directory: $cache\n";
             copyPackageFiles( $cache, $dir );
         }
     }
@@ -771,12 +775,12 @@ sub downloadPackagesToDirectory
     #
     if( $CONFIG{'cache'} )
     {
-        $CONFIG{'verbose'} && print "Copying files to cache  $cache\n";
+        $CONFIG{'verbose'} && print "Copying files to cache directory: $cache\n";
 
         #
         #  Make sure we have a cache directory.
         #
-        mkdir $cache, 0755 if ( ! -d $cache );
+        mkpath( $cache, 0, 0755 ) if ( ! -d $cache );
 
         copyPackageFiles( $dir, $cache );
     }
