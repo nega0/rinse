@@ -92,7 +92,7 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.10 2007-07-20 16:20:36 steve Exp $
+ $Id: rinse,v 1.11 2007-07-20 19:12:00 steve Exp $
 
 =cut
 
@@ -208,6 +208,7 @@ if ( ! -d $CONFIG{'directory'} )
 #
 my @packages = getDistributionPackageList( $CONFIG{'distribution'} );
 
+
 #
 #  Find the mirror, if not specified already.
 #
@@ -216,18 +217,12 @@ if ( ! $CONFIG{'mirror'} )
   $CONFIG{'mirror'} = getDistributionMirror( $CONFIG{'distribution'} );
 }
 
-#
-#  Save it away.
-#
-my $mirror = $CONFIG{'mirror'};
-
-
 
 #
 #
 #  Download the packages into the specified directory
 #
-downloadPackagesToDirectory( $CONFIG{'directory'}, $mirror, @packages );
+downloadPackagesToDirectory( $CONFIG{'directory'}, $CONFIG{'mirror'}, @packages );
 
 
 #
@@ -360,7 +355,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.10 $';
+        my $REVISION      = '$Revision: 1.11 $';
         if ( $REVISION =~ /1.([0-9.]+) / )
         {
             $REVISION = $1;
@@ -695,36 +690,20 @@ sub downloadPackagesToDirectory
     }
 
     #
-    #  Download the index of the mirror, so that we can do the
-    # package matching magic.
+    #  Find the links available for download on our mirror.
     #
-    my $index = downloadURL( $mirror );
+    my %links = findMirrorContents( $mirror );
 
-    my %links;
-
-    foreach my $line ( split( /\n/, $index ) )
-    {
-        while ( $line =~ /<a href=\"([^\"]+)\">(.*)/ )
-        {
-            my $link = $1;
-            $line    = $2;
-
-            if ( $link =~ /^(.*)\/(.*)$/ )
-            {
-                $link = $2;
-            }
-            $links{$link} = 1;
-        }
-    }
 
     #
-    #  Numbers used for the status.
+    #  Count of links, and the currently active download.
+    # Used purely for the status updates..
     #
     my $count = 0;
     my $total = $#packages;
 
     #
-    #  Process each package
+    #  Process each package we're supposed to fetch.
     #
     foreach my $package ( @packages )
     {
@@ -803,6 +782,75 @@ sub downloadPackagesToDirectory
     }
 }
 
+
+
+=begin doc
+
+  Find the links which are contained in the given HTML
+ page.
+
+=end doc
+
+=cut
+
+sub findMirrorContents
+{
+    my ( $mirror ) = ( @_ );
+
+    #
+    #  Download
+    #
+    my $index = downloadURL( $mirror );
+
+    #
+    #  Now we want to store all the links we've found.
+    #
+    my %links;
+
+    #
+    # Parse the HTML.
+    #
+    foreach my $line ( split( /\n/, $index ) )
+    {
+        while ( $line =~ /<a href=\"([^\"]+)\">(.*)/ )
+        {
+            my $link = $1;
+            $line    = $2;
+
+            if ( $link =~ /^(.*)\/(.*)$/ )
+            {
+                $link = $2;
+            }
+            $links{$link} = 1;
+        }
+    }
+
+    #
+    #  Now we need to do something sneaky.
+    #
+    #  If we're looking at installing i386, or amd64,
+    # then we need to *only* return those things.
+    #
+    my $i386 = undef;
+    $i386 = 1 if ( $CONFIG{'arch'} =~ /i386/ );
+    $i386 = 0 if ( $CONFIG{'arch'} =~ /amd64/ );
+
+    foreach my $key ( sort keys %links )
+    {
+        # i386 packages when we're dealing with amd64 installs.
+        if ( ( $key =~ /\.i386\./ ) && !$i386 )
+        {
+            delete( $links{$key} );
+        }
+
+        # amd64 packages when we're dealing with i386 installs.
+        if ( $key =~ /\.x86_68\./ && ($i386) )
+        {
+            delete( $links{$key} );
+        }
+    }
+    return( %links );
+}
 
 
 
