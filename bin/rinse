@@ -96,7 +96,7 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.17 2007-07-21 19:25:43 steve Exp $
+ $Id: rinse,v 1.18 2007-07-21 21:59:54 steve Exp $
 
 =cut
 
@@ -360,7 +360,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.17 $';
+        my $REVISION      = '$Revision: 1.18 $';
         if ( $REVISION =~ /1.([0-9.]+) / )
         {
             $REVISION = $1;
@@ -849,7 +849,7 @@ sub findMirrorContents
         }
 
         # amd64 packages when we're dealing with i386 installs.
-        if ( $key =~ /\.x86_68\./ && ($i386) )
+        if ( $key =~ /\.x86_64\./ && ($i386) )
         {
             delete( $links{$key} );
         }
