@@ -1,0 +1,272 @@
+#!/usr/bin/perl -w
+
+=head1 NAME
+
+rinse-unpack - A utility for working with a directory of RPM files.
+
+=head1 SYNOPSIS
+
+  rinse [options]
+
+  Help Options:
+   --help     Show help information.
+   --manual   Read the manual for this script.
+   --version  Show the version information and exit.
+
+  Mandatory Options:
+   --directory    The directory to install the distribution within.
+
+
+=cut
+
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--directory>
+Specify the directory containing the files to unpack.
+
+=item B<--help>
+Show help information.
+
+=item B<--manual>
+Read the manual for this script.
+
+=item B<--version>
+Show the version number and exit.
+
+=back
+
+=cut
+
+
+=head1 DESCRIPTION
+
+  rinse-unpack is a simple utilty which will "unpack" all the files
+ in the specified directory.
+
+  It isn't used by rinse itself, instead it is supplied as a utility
+ for people who run into troubles using rinse.
+
+=cut
+
+=head1 AUTHOR
+
+ Steve
+ --
+ http://www.steve.org.uk/
+
+ $Id: rinse-unpack,v 1.1 2007-07-21 19:17:12 steve Exp $
+
+=cut
+
+
+=head1 LICENSE
+
+Copyright (c) 2007 by Steve Kemp.  All rights reserved.
+
+This module is free software;
+you can redistribute it and/or modify it under
+the same terms as Perl itself.
+The LICENSE file contains the full text of the license.
+
+=cut
+
+
+
+#
+#  Good practise
+#
+use strict;
+use warnings;
+
+#
+#  Standard Perl modules we require
+#
+use English;
+use Getopt::Long;
+use Pod::Usage;
+
+
+
+
+#
+# Release number.
+#
+my $RELEASE = '0.4';
+
+
+#
+#  Our confiuration options.
+#
+my %CONFIG;
+$CONFIG{'directory'} = '.';   # default to the current directory.
+
+
+#
+#  Make sure the host is setup correctly, and that all required
+# tools are available.
+#
+testSetup();
+
+
+#
+#  Parse our arguments
+#
+parseCommandLineArguments();
+
+
+#
+#  Make sure the directory we've been given actually exists.
+#
+if ( ! -d $CONFIG{'directory'} )
+{
+    print "The directory specified doesn't exist.  Aborting\n";
+    exit;
+}
+
+
+#
+#  Convert *.rpm -> *.tgz
+#
+print "Converting *.rpm -> *.tgz\n";
+convertRPM2TGZ( $CONFIG{'directory'} );
+
+
+#
+#  Unpack *.tgz
+#
+print "Unpackage *.tgz\n";
+unpackTGZ( $CONFIG{'directory'} );
+
+
+#
+#  All done.
+#
+print "Unpacking complete\n";
+exit;
+
+
+
+
+
+=begin doc
+
+  Convert each .rpm file into a .tgz file, via the use of the alien tool.
+
+=end doc
+
+=cut
+
+sub convertRPM2TGZ
+{
+    my( $directory ) = ( @_ );
+
+    foreach my $file ( sort( glob( $directory . "/*.rpm" ) ) )
+    {
+        system( "cd $directory && alien --to-tgz $file 2>/dev/null >/dev/null" );
+    }
+}
+
+
+
+=begin doc
+
+  Unpack each .tgz file in the specified directory.
+
+=end doc
+
+=cut
+
+sub unpackTGZ
+{
+    my( $directory ) = ( @_ );
+
+    foreach my $file ( sort( glob( $directory . "/*.tgz" ) ) )
+    {
+        system( "cd $directory && tar -zxf $file 2>/dev/null >/dev/null" );
+    }
+}
+
+
+
+=begin doc
+
+  This routine is designed to test that the host system we're running
+ upon has all the required binaries present.
+
+  If any are missing then we'll abort.
+
+=end doc
+
+=cut
+
+sub testSetup
+{
+
+    my @required = qw/ alien rpm wget /;
+
+    foreach my $file ( @required )
+    {
+        if ( ( ! -x "/bin/$file" ) &&
+             ( ! -x "/usr/bin/$file" ) )
+        {
+            print "The following (required) binary appears to be missing:\n";
+            print "\t" . $file . "\n";
+            print "Aborting...\n";
+            exit;
+        }
+    }
+}
+
+
+
+=begin doc
+
+  Parse our command line arguments.
+
+=end doc
+
+=cut
+
+sub parseCommandLineArguments
+{
+    my $HELP    = 0;
+    my $MANUAL  = 0;
+    my $VERSION = 0;
+
+    #
+    #  Parse options.
+    #
+    GetOptions(
+               # Main options
+               "directory=s",        \$CONFIG{'directory'},
+
+               # Help options
+               "help",         \$HELP,
+               "manual",       \$MANUAL,
+               "verbose",      \$CONFIG{'verbose'},
+               "version",      \$VERSION
+
+              );
+
+    pod2usage(1) if $HELP;
+    pod2usage(-verbose => 2 ) if $MANUAL;
+
+
+    if ( $VERSION )
+    {
+        my $REVISION      = '$Revision: 1.1 $';
+        if ( $REVISION =~ /1.([0-9.]+) / )
+        {
+            $REVISION = $1;
+        }
+
+        print( "rinse-unpack release $RELEASE - CVS: $REVISION\n" );
+        exit;
+    }
+}
+
+
+
