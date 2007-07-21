@@ -96,7 +96,7 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.14 2007-07-20 21:39:40 steve Exp $
+ $Id: rinse,v 1.15 2007-07-21 16:06:49 steve Exp $
 
 =cut
 
@@ -360,13 +360,13 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.14 $';
+        my $REVISION      = '$Revision: 1.15 $';
         if ( $REVISION =~ /1.([0-9.]+) / )
         {
             $REVISION = $1;
         }
 
-        logprint( "rinse release $RELEASE - CVS: $REVISION\n" );
+        print( "rinse release $RELEASE - CVS: $REVISION\n" );
         exit;
     }
 }
