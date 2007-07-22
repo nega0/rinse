@@ -9,10 +9,14 @@ Package: rinse
 Architecture: all
 Depends: wget, alien, libterm-size-perl
 Description: RPM installation environment
- rinse is a tool for bootstrapping a basic RPM-based distribution of
+ This is a tool for bootstrapping a basic RPM-based distribution of
  GNU/Linux.
  .
- It is comparibly in purpose to the standard Debian debootstrap utility,
+ It is comparable in purpose to the standard Debian debootstrap utility,
  but works upon RPM-based distributions instead.
  .
- Rinse can setup CentOS 4 + 5, and Fedora Core 6.
+ Rinse can setup 32 and 64-bit installations of:
+  * CentOS 4 + 5
+  * Fedora Core 4, 5, & 6
+ .
+ Homepage: http://xen-tools.org/software/rinse
