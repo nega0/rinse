@@ -6,7 +6,7 @@ Rinse
   The rinse utility is designed to install a minimal RPM-based
  distribution of GNU/Linux within a local directory.
 
-  The purpose and usage are analagous to the 'debootstrap' utility
+  The purpose and usage are analogous to the 'debootstrap' utility
  familiar to users of Debian GNU/Linux.
 
 
@@ -40,4 +40,4 @@ Supported Distributions
 
 Steve
 --
-$Id: README,v 1.4 2007-07-22 00:03:37 steve Exp $
+$Id: README,v 1.5 2007-07-22 00:05:16 steve Exp $
