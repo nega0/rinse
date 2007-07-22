@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 4.0.0)
 
 Package: rinse
 Architecture: all
-Depends: wget, rpm, alien
+Depends: wget, alien
 Description: RPM installation environment
  rinse is a tool for bootstrapping a basic RPM-based distribution of
  GNU/Linux.
