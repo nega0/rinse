@@ -96,7 +96,7 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.19 2007-07-22 00:01:07 steve Exp $
+ $Id: rinse,v 1.20 2007-07-22 01:18:37 steve Exp $
 
 =cut
 
@@ -152,6 +152,11 @@ $CONFIG{'arch'}      = 'i386';
 $CONFIG{'cache'}     = 1;
 $CONFIG{'cache-dir'} = "/var/cache/rinse/";
 
+
+#
+#  Find the size of our terminal
+#
+( $CONFIG{'width'}, $CONFIG{'height'} ) = getTerminalSize();
 
 
 #
@@ -360,7 +365,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.19 $';
+        my $REVISION      = '$Revision: 1.20 $';
         if ( $REVISION =~ /1.([0-9.]+) / )
         {
             $REVISION = $1;
@@ -746,7 +751,15 @@ sub downloadPackagesToDirectory
                     }
                     else
                     {
-                        print "[$count:$total] Downloading: $key ..        \r";
+                        #
+                        #  Print message and padding.
+                        #
+                        my $msg =  "\r[$count:$total] Downloading: $key ..";
+                        while( length( $msg ) < ( $CONFIG{'width'} -1) )
+                        {
+                            $msg .= " ";
+                        }
+                        print $msg;
 
                         # download - unless already present.
                         if ( ! -e "$dir/$key" )
@@ -768,7 +781,10 @@ sub downloadPackagesToDirectory
 
         $count += 1;
     }
-    print " " x 60 . "\r";
+
+    # newline.
+    print "\r";
+    print " " x ($CONFIG{'width'} - 1 );
     print "\n";
 
     #
@@ -938,7 +954,16 @@ sub unpackPackages
         {
             $name = $2;
         }
-        print "Converting RPM $name        \r";
+
+        #
+        #  Show status output.
+        #
+        my $msg =  "\rConverting .rpm file : $name";
+        while( length( $msg ) < ( $CONFIG{'width'} -1) )
+        {
+            $msg .= " ";
+        }
+        print $msg;
 
         #
         #  Convert to .tgz
@@ -955,7 +980,8 @@ sub unpackPackages
 
         $CONFIG{'verbose'} && print "+convert $file\n";
     }
-    print " " x 60 . "\r";
+    print "\r";
+    print " " x $CONFIG{'width'};
     print "\n";
 
     #
@@ -975,7 +1001,16 @@ sub unpackPackages
         {
             $name = $2;
         }
-        print "Unpacking $name        \r";
+
+        #
+        #  Show status message.
+        #
+        my $msg = "\rUnpacking .tgz file: $name ..";
+        while( length( $msg ) < ( $CONFIG{'width'} -1) )
+        {
+            $msg .= " ";
+        }
+        print $msg;
 
         #
         #  Unpack.
@@ -984,8 +1019,6 @@ sub unpackPackages
         $cmd .= " >/dev/null 2>/dev/null" unless( $CONFIG{'verbose'} );
         system( $cmd );
 
-
-
         #
         #  Remove
         #
@@ -993,7 +1026,12 @@ sub unpackPackages
 
         $CONFIG{'verbose'} && print "+unpack $file\n";
     }
-    print " " x 60 . "\r";
+
+    #
+    #  Newline.
+    #
+    print "\r";
+    print " " x $CONFIG{'width'};
     print "\n";
 }
 
@@ -1129,3 +1167,40 @@ sub packageNameFromFileName
 }
 
 
+
+
+=head2 getTerminalSize
+
+  Find and return the width of the current terminal.  This makes
+ use of the optional Term::Size module.  If it isn't installed then
+ we fall back to the standard size of 80x25.
+
+=cut
+
+
+sub getTerminalSize
+{
+    my $testModule  = "use Term::Size;";
+
+    my $width  = 80;
+    my $height = 25;
+
+    #
+    #  Test loading the size module.  If this fails 
+    # then we will use the defaults sizes.
+    #
+    eval( $testModule );
+    if ( $@ )
+    {
+    }
+    else
+    {
+        #
+        # Term::Size is available, so use it to find
+        # the current terminal size.
+        #
+        ($width, $height ) = Term::Size::chars();
+    }
+
+    return( $width, $height );
+}
