@@ -19,10 +19,10 @@ Requirements
  by:
 
    apt-get update
-   apt-get install rpm alien wget
+   apt-get install alien wget
 
 
 
 Steve
 -- 
-$Id: INSTALL,v 1.2 2007-07-16 00:15:57 steve Exp $
+$Id: INSTALL,v 1.3 2007-07-22 00:04:07 steve Exp $
