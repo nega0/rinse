@@ -96,7 +96,7 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.22 2007-07-23 14:42:29 steve Exp $
+ $Id: rinse,v 1.23 2007-07-23 15:36:11 steve Exp $
 
 =cut
 
@@ -365,7 +365,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.22 $';
+        my $REVISION      = '$Revision: 1.23 $';
         if ( $REVISION =~ /1.([0-9.]+) / )
         {
             $REVISION = $1;
@@ -842,6 +842,12 @@ sub findMirrorContents
             {
                 $link = $2;
             }
+
+            #
+            #  Decode entities.  eg. libstd++
+            #
+            $link = uri_unescape( $link );
+
             $links{$link} = 1;
         }
     }
@@ -870,6 +876,7 @@ sub findMirrorContents
             delete( $links{$key} );
         }
     }
+
     return( %links );
 }
 
@@ -1122,53 +1129,6 @@ sub copyPackageFiles
 
 
 
-=begin doc
-
-  Convert something like:
-
-    compat-gcc-34-c++-3.4.6-4.i386.rpm
-
-  into:
-
-    compat-gcc-34
-
-=end doc
-
-=cut
-
-sub packageNameFromFileName
-{
-    my( $str ) = ( @_ );
-
-    my @parts  = split( /-/, $str );
-
-
-    my $name     = '';
-    my $ver      = '';
-    my $foundver = 0;
-
-    foreach my $t ( @parts )
-    {
-        $foundver = 1 if (( $t =~ /^([0-9bm\.-]+)$/ ) &&
-                          ( $t =~ /\./ ) );
-        if ( $foundver )
-        {
-            $ver = $ver . "-" . $t;
-        }
-        else
-        {
-            $name = $name . "-" . $t;
-        }
-    }
-    $name =~ s/^-//g if ( $name );
-    $ver  =~ s/^-//g if ( $ver );
-
-    return( $name );
-}
-
-
-
-
 =head2 getTerminalSize
 
   Find and return the width of the current terminal.  This makes
@@ -1203,4 +1163,39 @@ sub getTerminalSize
     }
 
     return( $width, $height );
+}
+
+
+
+=begin doc
+
+
+  Taken from the URI::Escape module, which contains the following
+ copyright:
+
+    Copyright 1995-2004 Gisle Aas.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the same terms as Perl itself.
+
+=end doc
+
+=cut
+
+sub uri_unescape
+{
+    # Note from RFC1630:  "Sequences which start with a percent sign
+    # but are not followed by two hexadecimal characters are reserved
+    # for future extension"
+    my $str = shift;
+    if (@_ && wantarray) {
+	# not executed for the common case of a single argument
+	my @str = ($str, @_);  # need to copy
+	foreach (@str) {
+	    s/%([0-9A-Fa-f]{2})/chr(hex($1))/eg;
+	}
+	return @str;
+    }
+    $str =~ s/%([0-9A-Fa-f]{2})/chr(hex($1))/eg if defined $str;
+    $str;
 }
