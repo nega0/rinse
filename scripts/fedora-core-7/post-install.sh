@@ -68,11 +68,11 @@ assumeyes=1
 
 [core]
 name=core
-mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=core-6&arch=$arch
+baseurl=http://mirror.bytemark.co.uk/fedora/linux/releases/7/Fedora/$arch/os
 
 [updates-released]
 name=updates
-mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=updates-released-fc6&arch=$arch
+baseurl=http://mirror.bytemark.co.uk/fedora/linux/releases/7/Fedora/$arch/os
 EOF
 
 
