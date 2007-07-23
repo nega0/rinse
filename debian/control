@@ -16,7 +16,7 @@ Description: RPM installation environment
  but works upon RPM-based distributions instead.
  .
  Rinse can setup 32 and 64-bit installations of:
-  * CentOS 4 + 5
-  * Fedora Core 4, 5, & 6
+  * CentOS 4 & 5.
+  * Fedora Core 4, 5, 6, & 7.
  .
  Homepage: http://xen-tools.org/software/rinse
