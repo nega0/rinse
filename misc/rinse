@@ -12,6 +12,10 @@ function _rinse()
     opts=$(rinse  --help|grep -- --|awk '{print $1}'|grep -- -- | sort -u)
 
     case "$prev" in
+	--arch)
+	    COMPREPLY=( $( compgen -W 'amd64 i386'  -- "${COMP_WORDS[COMP_CWORD]}" ) )
+	    return 0
+	    ;;
 	--cache)
 	    COMPREPLY=( $( compgen -W '0 1'  -- "${COMP_WORDS[COMP_CWORD]}" ) )
 	    return 0
