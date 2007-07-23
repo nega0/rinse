@@ -96,7 +96,7 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.23 2007-07-23 15:36:11 steve Exp $
+ $Id: rinse,v 1.24 2007-07-23 15:39:16 steve Exp $
 
 =cut
 
@@ -365,7 +365,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.23 $';
+        my $REVISION      = '$Revision: 1.24 $';
         if ( $REVISION =~ /1.([0-9.]+) / )
         {
             $REVISION = $1;
@@ -1146,7 +1146,7 @@ sub getTerminalSize
     my $height = 25;
 
     #
-    #  Test loading the size module.  If this fails 
+    #  Test loading the size module.  If this fails
     # then we will use the defaults sizes.
     #
     eval( $testModule );
@@ -1188,13 +1188,15 @@ sub uri_unescape
     # but are not followed by two hexadecimal characters are reserved
     # for future extension"
     my $str = shift;
-    if (@_ && wantarray) {
-	# not executed for the common case of a single argument
-	my @str = ($str, @_);  # need to copy
-	foreach (@str) {
-	    s/%([0-9A-Fa-f]{2})/chr(hex($1))/eg;
-	}
-	return @str;
+    if (@_ && wantarray)
+    {
+        # not executed for the common case of a single argument
+        my @str = ($str, @_);  # need to copy
+        foreach (@str)
+        {
+            s/%([0-9A-Fa-f]{2})/chr(hex($1))/eg;
+        }
+        return @str;
     }
     $str =~ s/%([0-9A-Fa-f]{2})/chr(hex($1))/eg if defined $str;
     $str;
