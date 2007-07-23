@@ -96,7 +96,7 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.21 2007-07-22 01:30:43 steve Exp $
+ $Id: rinse,v 1.22 2007-07-23 14:42:29 steve Exp $
 
 =cut
 
@@ -365,7 +365,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.21 $';
+        my $REVISION      = '$Revision: 1.22 $';
         if ( $REVISION =~ /1.([0-9.]+) / )
         {
             $REVISION = $1;
@@ -833,7 +833,7 @@ sub findMirrorContents
     #
     foreach my $line ( split( /\n/, $index ) )
     {
-        while ( $line =~ /<a href=\"([^\"]+)\">(.*)/ )
+        while ( $line =~ /<a href=\"([^\"]+)\">(.*)/i )
         {
             my $link = $1;
             $line    = $2;
