@@ -82,6 +82,37 @@ Show the version number and exit.
 =cut
 
 
+=head1 USAGE
+
+  To use this script you will need to be root.  This is required
+ to mount /proc, run chroot, and more.
+
+  Basic usage is as simple as:
+
+=for example begin
+
+   rinse --distribution fedora-core-6 --directory /tmp/test
+
+=for example end
+
+
+  This will download the required RPM files and unpack them into
+ a minimal installation of Fedora Core 6.
+
+  To see which RPM files would be downloaded, without actually
+ performing an installation or downloading anything, then you
+ may run the following:
+
+
+=for example beging
+
+   rinse --distribution fedora-core-6 --print-uris
+
+=for example end
+
+=cut
+
+
 =head1 TODO
 
   Short of supporting more distributions or architectures there aren't
@@ -96,7 +127,7 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.26 2007-07-24 18:24:26 steve Exp $
+ $Id: rinse,v 1.27 2007-07-24 18:28:03 steve Exp $
 
 =cut
 
@@ -365,7 +396,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.26 $';
+        my $REVISION      = '$Revision: 1.27 $';
         if ( $REVISION =~ /1.([0-9.]+) / )
         {
             $REVISION = $1;
@@ -1136,11 +1167,13 @@ sub copyPackageFiles
 
 
 
-=head2 getTerminalSize
+=begin doc
 
   Find and return the width of the current terminal.  This makes
  use of the optional Term::Size module.  If it isn't installed then
  we fall back to the standard size of 80x25.
+
+=end doc
 
 =cut
 
