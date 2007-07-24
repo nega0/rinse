@@ -96,7 +96,7 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.24 2007-07-23 15:39:16 steve Exp $
+ $Id: rinse,v 1.25 2007-07-24 18:21:45 steve Exp $
 
 =cut
 
@@ -137,7 +137,7 @@ use LWP::UserAgent;
 #
 # Release number.
 #
-my $RELEASE = '0.5';
+my $RELEASE = '0.6';
 
 
 #
@@ -365,7 +365,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.24 $';
+        my $REVISION      = '$Revision: 1.25 $';
         if ( $REVISION =~ /1.([0-9.]+) / )
         {
             $REVISION = $1;
@@ -833,21 +833,26 @@ sub findMirrorContents
     #
     foreach my $line ( split( /\n/, $index ) )
     {
-        while ( $line =~ /<a href=\"([^\"]+)\">(.*)/i )
+        #
+        #  Look for contents of the form:
+        #
+        #     href="...">
+        #
+        while ( $line =~ /href=\"([^\"]+)\">(.*)/i )
         {
             my $link = $1;
             $line    = $2;
 
-            if ( $link =~ /^(.*)\/(.*)$/ )
-            {
-                $link = $2;
-            }
+            # strip any path from the link.
+            $link = $2 if ( $link =~ /^(.*)\/(.*)$/ );
 
-            #
+            # ignore any non-RPM links.
+            next if ( $link !~ /\.rpm$/i );
+
             #  Decode entities.  eg. libstd++
-            #
             $link = uri_unescape( $link );
 
+            # store
             $links{$link} = 1;
         }
     }
