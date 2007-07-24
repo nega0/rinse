@@ -96,7 +96,7 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.25 2007-07-24 18:21:45 steve Exp $
+ $Id: rinse,v 1.26 2007-07-24 18:24:26 steve Exp $
 
 =cut
 
@@ -197,13 +197,13 @@ sanityCheckArguments();
 #  Ensure we're started by root at this point.  This is required
 # to make sure we mount /proc, etc.
 #
-testRootUser();
+testRootUser() unless( $CONFIG{'print-uris'} );
 
 
 #
 #  Make sure the directory we're installing into exists.
 #
-if ( ! -d $CONFIG{'directory'} )
+if ( ( !$CONFIG{'print-uris'} ) && ( ! -d $CONFIG{'directory'} ) )
 {
     #
     # Make the directory, including all required parent(s) directories.
@@ -365,7 +365,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.25 $';
+        my $REVISION      = '$Revision: 1.26 $';
         if ( $REVISION =~ /1.([0-9.]+) / )
         {
             $REVISION = $1;
@@ -409,9 +409,11 @@ EOF
 
 
     #
-    #  Installation root is mandatory
+    #  Installation root is mandatory *unless* we're just printing
+    # the URLs we'd download
     #
-    if ( ! $CONFIG{'directory'} )
+    if ( ( ! $CONFIG{'directory'} ) &&
+         ( ! $CONFIG{'print-uris'} ) )
     {
         print <<EOF;
 
@@ -687,7 +689,7 @@ sub downloadPackagesToDirectory
     #  Unless we've been told not to then copy packages from
     # the cache.
     #
-    if( $CONFIG{'cache'} )
+    if ( ( $CONFIG{'cache'} ) && !$CONFIG{'print-uris'} )
     {
         #
         #  Make sure we have a cache directory.
@@ -790,7 +792,7 @@ sub downloadPackagesToDirectory
     #
     #  Now update the cache.
     #
-    if( $CONFIG{'cache'} )
+    if ( ( $CONFIG{'cache'} ) && !$CONFIG{'print-uris'} )
     {
         $CONFIG{'verbose'} && print "Copying files to cache directory: $cache\n";
 
