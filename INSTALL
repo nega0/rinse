@@ -19,10 +19,17 @@ Requirements
  by:
 
    apt-get update
-   apt-get install alien wget
+   apt-get install wget rpm
 
+
+Host System
+-----------
+
+  Although this tool has only been tested upon Debian and Ubuntu
+ host systems it should be supported by any distribution of GNU/Linux
+ which has working 'rpm' and 'rpm2cpio' commands.
 
 
 Steve
 -- 
-$Id: INSTALL,v 1.3 2007-07-22 00:04:07 steve Exp $
+$Id: INSTALL,v 1.4 2007-07-27 15:32:27 steve Exp $

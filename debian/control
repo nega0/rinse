@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 4.0.0)
 
 Package: rinse
 Architecture: all
-Depends: wget, alien, libterm-size-perl, libwww-perl, perl-modules
+Depends: wget, libterm-size-perl, libwww-perl, perl-modules, rpm
 Description: RPM installation environment
  This is a tool for bootstrapping a basic RPM-based distribution of
  GNU/Linux.
