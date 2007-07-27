@@ -87,7 +87,7 @@ mount -o bind /proc ${prefix}/proc
 
 echo "  Bootstrapping yum"
 chroot ${prefix} /sbin/ldconfig
-chroot ${prefix} /usr/bin/yum install yum 2>/dev/null
+chroot ${prefix} /usr/bin/yum -y install yum 2>/dev/null
 
 
 #

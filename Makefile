@@ -3,7 +3,7 @@
 #
 # Steve
 # --
-# $Id: Makefile,v 1.10 2007-07-21 19:25:42 steve Exp $
+# $Id: Makefile,v 1.11 2007-07-27 21:59:12 steve Exp $
 #
 
 
@@ -11,7 +11,7 @@
 #  Only used to build distribution tarballs.
 #
 DIST_PREFIX = ${TMP}
-VERSION     = 0.5
+VERSION     = 0.6
 BASE        = rinse
 PREFIX      = 
 
