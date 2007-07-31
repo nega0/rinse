@@ -1,3 +1,18 @@
+rinse (0.6-3) unstable; urgency=low
+
+  * Changed the maintainer address to be my Debian address.
+
+ -- Steve Kemp <skx@debian.org>  Tue, 31 Jul 2007 14:11:40 +0000
+
+rinse (0.6-2) unstable; urgency=medium
+
+  * Sync up to the latest real 0.6 release:
+    - Add support for Fedora Core 7.
+    - Drop the dependency upon 'alien'.
+    - Added more testing.
+
+ -- Steve Kemp <skx@debian.org>  Sun, 29 Jul 2007 00:28:41 +0000
+
 rinse (0.6-1) unstable; urgency=medium
 
   * Initial upload to Debian Sid.  (Closes: #434282)
