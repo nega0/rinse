@@ -1,3 +1,10 @@
+rinse (0.7-1) unstable; urgency=low
+
+  * New upstream release
+    - Working installers for Centos 4 & 5.
+
+ -- Steve Kemp <skx@debian.org>  Wed, 8 Aut 2007 18:36:31 +0000
+
 rinse (0.6-3) unstable; urgency=low
 
   * Changed the maintainer address to be my Debian address.
