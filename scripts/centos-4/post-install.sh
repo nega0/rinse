@@ -42,7 +42,7 @@ priority=1
 protect=1
 
 #released updates 
-[update]
+[updates]
 name=CentOS-4.5 - Updates
 mirrorlist=http://mirrorlist.centos.org/?release=4.5&arch=$arch&repo=updates
 baseurl=http://mirror.centos.org/centos/4.5/updates/$arch/
