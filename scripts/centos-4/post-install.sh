@@ -40,9 +40,11 @@ gpgcheck=0
 gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-centos4
 priority=1
 protect=1
+enabled=1
+
 
 #released updates 
-[updates]
+[update]
 name=CentOS-4.5 - Updates
 mirrorlist=http://mirrorlist.centos.org/?release=4.5&arch=$arch&repo=updates
 baseurl=http://mirror.centos.org/centos/4.5/updates/$arch/
@@ -50,6 +52,7 @@ gpgcheck=0
 gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-centos4
 priority=1
 protect=1
+enabled=1
 
 #packages used/produced in the build but not released
 [addons]
