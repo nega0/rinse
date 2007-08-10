@@ -1,0 +1,73 @@
+#!/bin/sh
+#
+#  Attempt to install each distribution into a static location
+# so that we can test it worked as expected.
+#
+#  This is not run automatically because detection of success is
+# hard - and it would take a very very long time to complete.
+#
+# Steve
+# --
+#
+
+
+#
+#  Prefix to install into.
+# 
+prefix=/tmp
+
+
+#
+#  We must be root to run the script.
+#
+if [ "$UID" != "0" ]; then
+    echo "You must be root to run this script"
+    exit
+fi
+
+
+#
+#  Make sure the prefix exists.
+#
+if [ ! -d "$prefix" ]; then
+    echo "Prefix not found: $prefix"
+    exit
+fi
+
+#
+#  Save our start time
+#
+start=$(date)
+
+#
+#  Try all distributions
+#
+for i in $(rinse --list-distributions | grep -- - ); do
+
+    #
+    # Try all archs.
+    #
+    for j in i386 amd64 ; do
+
+        #
+        #  Clean old any previous run
+        #
+        if [ -d $prefix/$i.$j ]; then
+            rm -rf $prefix/$i.$j
+        fi
+
+        #
+        #  Install now, keeping a logfile of any activity.
+        #
+        rinse --directory=$prefix/$i.$j --distribution=$i --arch=$j | tee $prefix/$i.$j.log
+
+    done
+
+done
+
+
+#
+#  Report on the time taken to perform the installations.
+#
+echo "Started: ${start}"
+echo "Finished: `date`"
