@@ -110,6 +110,14 @@ chroot ${prefix} /usr/bin/yum -y install yum passwd 2>/dev/null
 
 
 #
+#  4.5 make 'passwd' work.
+#
+echo "  Authfix"
+chroot ${prefix} /usr/bin/yum -y install authconfig
+chroot ${prefix} /usr/bin/authconfig --enableshadow --update
+
+
+#
 #  5.  Clean up
 #
 echo "  Cleaing up"
