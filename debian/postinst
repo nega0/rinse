@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -e
+
+#
+# Skip, if we are not in "configure" state
+#
+if [ "$1" != "configure" ]; then
+        echo "I: Skipping configuration"
+        exit 0
+fi
+
+#
+#  Handle obsolete files.
+#
+for i in /etc/rinse/*-*.conf; do
+    rm -f $i
+done
+
+#DEBHELPER#
+exit 0
