@@ -11,23 +11,5 @@ Reporting Bugs
  and a test case would be a useful bonus.
 
 
-Known Bugs
-----------
-
-  The handling of multiple configuration files for the mirror setup
- is a little crazy.  It probably makes sense to setup:
-
-                /etc/rinse/mirrors.txt
-
-  Then inside that have:
-
-   ..
-   fedora-core-4.i386  = http://.....
-   fedora-core-4.amd64 = http://.....
-   ..
-
-  etc.
-
-
 Steve
 -- 
