@@ -99,9 +99,9 @@ EOF
 #
 #  3.5 BUGFIX:
 echo "BUGFIX"
-mkdir -p ${prefix}usr/lib/python2.4/site-packages/urlgrabber.skx
+mkdir -p ${prefix}/usr/lib/python2.4/site-packages/urlgrabber.skx
 for i in ${prefix}/usr/lib/python2.4/site-packages/urlgrabber/keepalive.*; do
-    mv $i ${prefix}usr/lib/python2.4/site-packages/urlgrabber.skx/
+    mv $i ${prefix}/usr/lib/python2.4/site-packages/urlgrabber.skx/
 done
 
 #
