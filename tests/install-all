@@ -14,7 +14,7 @@
 #
 #  Prefix to install into.
 # 
-prefix=/tmp
+prefix=/tmp/f/b
 
 
 #
