@@ -127,7 +127,7 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.29 2007-08-08 17:34:23 steve Exp $
+ $Id: rinse,v 1.30 2007-08-11 22:36:15 steve Exp $
 
 =cut
 
@@ -254,7 +254,8 @@ my @packages = getDistributionPackageList( $CONFIG{'distribution'} );
 #
 if ( ! $CONFIG{'mirror'} )
 {
-  $CONFIG{'mirror'} = getDistributionMirror( $CONFIG{'distribution'} );
+  $CONFIG{'mirror'} = getDistributionMirror( $CONFIG{'distribution'},
+                                             $CONFIG{'arch'} );
 }
 
 
@@ -396,7 +397,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.29 $';
+        my $REVISION      = '$Revision: 1.30 $';
         if ( $REVISION =~ /1.([0-9.]+) / )
         {
             $REVISION = $1;
@@ -620,15 +621,15 @@ EOF
 
 sub getDistributionMirror
 {
-    my( $distribution ) = (@_);
+    my( $dist, $arch ) = (@_);
 
-    my $file = "/etc/rinse/$distribution.conf";
+    my $file = "/etc/rinse/rinse.conf";
 
     if ( ! -e $file )
     {
         print <<EOF;
 
-  The configuration file for the distribution $distribution was not found.
+  The configuration file was not found.
 
   We expected to find:
 
@@ -640,20 +641,36 @@ EOF
         exit;
     }
 
+    open( INPUT, "<", $file ) or die "Failed to open $file - $!";
+
     #
-    #  Read the file, skipping blank lines and comments
+    #  Are we in the block of the named distribution?
+    #
+    my $indist = 0;
+
+    #
+    #  Configuration values we've read.
     #
     my %options;
 
-    open( FILE, "<", $file ) or die "Failed to open $file - $!";
-    foreach my $line ( <FILE> )
+    foreach my $line ( <INPUT> )
     {
-        next if ( !$line );
-        next if ( $line =~ /^#/ );
-
+        next if ( !$line || !length($line ) );
+        next if $line =~ /^#/;
         chomp( $line );
 
-        if ( $line =~ /([^=]+)=([^\n]+)/ )
+        if ( $line =~ /^\[([^]]+)\]/ )
+        {
+            if ( lc($1) eq lc($dist) )
+            {
+                $indist = 1;
+            }
+            else
+            {
+                $indist = 0;
+            }
+        }
+        elsif ( ( $line =~ /([^=]+)=([^\n]+)/ ) && $indist )
         {
             my $key = $1;
             my $val = $2;
@@ -667,30 +684,25 @@ EOF
             $options{$key} = $val;
         }
     }
-    close( FILE );
-
-
-    #
-    #  Now look for a mirror which matches our arch
-    #
-    if ( $options{'mirror' . "." . $CONFIG{'arch'}} )
-    {
-        return( $options{'mirror' . "." . $CONFIG{'arch'}} );
-    }
-    else
-    {
-        return $options{'mirror'};
-    }
+    close( INPUT );
 
     #
-    #  Broken?
+    #  Did we find it?
+    #
+    my $key = "mirror." . $arch;
+    return( $options{$key} )     if ( $options{$key} );
+    return( $options{'mirror'} ) if ( $options{'mirror'} );
+
+    #
+    #  Error if we didn't.
     #
     print <<EOF;
 
-  Failed to find a mirror setting in $file.
+  We failed to find a distribution mirror for $dist ($arch)
+ in the file: $file
 
+  Aborting
 EOF
-
     exit;
 }
 
