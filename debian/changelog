@@ -1,9 +1,17 @@
+rinse (0.8-1) unstable; urgency=medium
+
+  * New upstream release
+    - Updated the handling of the bugfix for Centos 5.
+    - Removed /etc/rinse/*.conf and replaced with a single config file.
+
+ -- Steve Kemp <skx@debian.org>  Wun, 12 Aug 2007 00:24:42 +0000
+
 rinse (0.7-1) unstable; urgency=low
 
   * New upstream release
     - Working installers for Centos 4 & 5.
 
- -- Steve Kemp <skx@debian.org>  Wed, 8 Aut 2007 18:36:31 +0000
+ -- Steve Kemp <skx@debian.org>  Wed, 8 Aug 2007 18:36:31 +0000
 
 rinse (0.6-3) unstable; urgency=low
 
