@@ -31,10 +31,10 @@ default:
 
 
 #
-#  Show what has been changed in the local copy vs. the CVS repository.
+#  Show what has been changed in the local copy vs. the remote repository.
 #
 diff:
-	cvs diff --unified 2>/dev/null
+	hg diff 2>/dev/null
 
 
 
@@ -88,9 +88,9 @@ release: clean
 	rm -rf $(DIST_PREFIX)/$(BASE)-$(VERSION)
 	rm -f $(DIST_PREFIX)/$(BASE)-$(VERSION).tar.gz
 	cp -R . $(DIST_PREFIX)/$(BASE)-$(VERSION)
-	find  $(DIST_PREFIX)/$(BASE)-$(VERSION) -name "CVS" -print | xargs rm -rf
 	rm -rf $(DIST_PREFIX)/$(BASE)-$(VERSION)/debian
-	cd $(DIST_PREFIX) && tar --exclude=.cvsignore -cvf $(DIST_PREFIX)/$(BASE)-$(VERSION).tar $(BASE)-$(VERSION)/
+	rm -rf $(DIST_PREFIX)/$(BASE)-$(VERSION)/.hg*
+	cd $(DIST_PREFIX) && tar -cvf $(DIST_PREFIX)/$(BASE)-$(VERSION).tar $(BASE)-$(VERSION)/
 	gzip $(DIST_PREFIX)/$(BASE)-$(VERSION).tar
 	mv $(DIST_PREFIX)/$(BASE)-$(VERSION).tar.gz .
 	rm -rf $(DIST_PREFIX)/$(BASE)-$(VERSION)
@@ -112,12 +112,11 @@ test-verbose:
 
 
 #
-#  Update the local copy from the CVS repository.
+#  Update the local copy from the remote repository.
 #
-#  NOTE: Removes empty local directories.
 #
 update: 
-	cvs -z3 update -A -P -d 2>/dev/null
+	hg pull --update
 
 
 #
