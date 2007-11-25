@@ -1,4 +1,13 @@
 
+Homepage:
+    http://www.xen-tools.org/software/rinse
+
+Mercurial Repository:
+    http://rinse.repository.steve.org.uk/
+
+Mailing Lists:
+    http://lists.cvsrepository.org/
+
 
 Rinse
 -----
@@ -40,4 +49,3 @@ Supported Distributions
 
 Steve
 --
-$Id: README,v 1.6 2007-07-23 15:38:04 steve Exp $
