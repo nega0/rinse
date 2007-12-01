@@ -109,7 +109,10 @@ fi
 mount -o bind /proc ${prefix}/proc
 
 echo "  Bootstrapping yum"
-chroot ${prefix} /usr/bin/yum -y install yum passwd 2>/dev/null
+chroot ${prefix} /usr/bin/yum -y install yum         2>/dev/null
+chroot ${prefix} /usr/bin/yum -y install vim-minimal 2>/dev/null
+chroot ${prefix} /usr/bin/yum -y install dhclient    2>/dev/null
+
 
 
 #
