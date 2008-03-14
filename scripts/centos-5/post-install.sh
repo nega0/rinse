@@ -56,7 +56,7 @@ chroot ${prefix} /usr/bin/authconfig --enableshadow --update
 #
 #  5.  Clean up
 #
-echo "  Cleaing up"
+echo "  Cleaning up"
 chroot ${prefix} /usr/bin/yum clean all
 umount ${prefix}/proc
 
@@ -65,7 +65,7 @@ umount ${prefix}/proc
 #  6.  Remove the .rpm files from the prefix root.
 #
 echo "  Final tidy..."
-for i in ${prefix}/*.rpm; do 
+for i in ${prefix}/*.rpm; do
     rm -f $i
 done
 find ${prefix} -name '*.rpmorig' -delete
