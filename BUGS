@@ -5,11 +5,11 @@ Reporting Bugs
 
   To report a bug please use the xen-tools mailing list:
 
-        http://xen-tools.org/software/xen-tools/lists.html
+        http://xen-tools.org/lists/
 
   If you're capable of fixing it yourself a patch is appreciated,
  and a test case would be a useful bonus.
 
 
 Steve
--- 
+--

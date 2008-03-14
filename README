@@ -6,7 +6,7 @@ Mercurial Repository:
     http://rinse.repository.steve.org.uk/
 
 Mailing Lists:
-    http://lists.cvsrepository.org/
+    http://xen-tools.org/lists/
 
 
 Rinse
@@ -37,7 +37,7 @@ Supported Distributions
  32 and 64 bit flavours:
 
      *  CentOS
-        - 4.5 & 5.0
+        - 4.6 & 5.0
 
      *  Fedora Core
         - 4, 5, 6, & 7.
