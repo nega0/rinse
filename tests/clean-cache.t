@@ -4,8 +4,7 @@
 #
 # Steve
 # --
-# $Id: clean-cache.t,v 1.1 2007-07-20 21:38:46 steve Exp $
-#
+
 
 use strict;
 use File::Temp;

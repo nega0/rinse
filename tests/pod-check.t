@@ -5,8 +5,7 @@
 #
 # Steve
 # --
-# $Id: pod-check.t,v 1.2 2007-07-16 00:15:58 steve Exp $
-#
+
 
 use strict;
 use Test::More qw( no_plan );

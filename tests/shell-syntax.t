@@ -4,7 +4,7 @@
 #
 # Steve
 # --
-# $Id: shell-syntax.t,v 1.2 2007-07-16 00:15:58 steve Exp $
+
 
 
 use strict;

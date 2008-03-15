@@ -127,8 +127,6 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse,v 1.31 2007-08-11 22:39:22 steve Exp $
-
 =cut
 
 

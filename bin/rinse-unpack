@@ -67,8 +67,6 @@ Show the version number and exit.
  --
  http://www.steve.org.uk/
 
- $Id: rinse-unpack,v 1.6 2007-08-11 22:39:22 steve Exp $
-
 =cut
 
 

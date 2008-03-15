@@ -3,7 +3,6 @@
 #
 # Steve
 # --
-# $Id: Makefile,v 1.14 2007-11-13 21:15:46 steve Exp $
 #
 
 
@@ -13,7 +12,7 @@
 DIST_PREFIX = ${TMP}
 VERSION     = 0.9
 BASE        = rinse
-PREFIX      = 
+PREFIX      =
 
 
 #
@@ -115,7 +114,7 @@ test-verbose:
 #  Update the local copy from the remote repository.
 #
 #
-update: 
+update:
 	hg pull --update
 
 
