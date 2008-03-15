@@ -11,7 +11,7 @@ configure-stamp:
 
 build: build-stamp
 
-build-stamp: configure-stamp 
+build-stamp: configure-stamp
 	dh_testdir
 	touch build-stamp
 
@@ -20,23 +20,20 @@ clean:
 	dh_testroot
 	make clean
 	rm -f build-stamp configure-stamp
-	dh_clean 
+	dh_clean
 
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k 
+	dh_clean -k
 
 	make install PREFIX=`pwd`/debian/rinse
 
 	dh_installdirs
 
-# Build architecture-independent files here.
-binary-indep: build install
-# We have nothing to do by default.
 
 # Build architecture-dependent files here.
-binary-arch: build install
+binary-indep: build install
 	dh_testdir
 	dh_testroot
 	dh_install

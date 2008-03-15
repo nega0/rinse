@@ -2,8 +2,9 @@ Source: rinse
 Maintainer: Steve Kemp <skx@debian.org>
 Section: admin
 Priority: extra
-Standards-Version: 3.7.2
+Standards-Version: 3.7.3
 Build-Depends: debhelper (>= 4.0.0)
+Homepage: http://xen-tools.org/software/rinse
 
 Package: rinse
 Architecture: all
@@ -18,5 +19,3 @@ Description: RPM installation environment
  Rinse can setup 32 and 64-bit installations of:
   * CentOS 4 & 5.
   * Fedora Core 4, 5, 6, & 7.
- .
- Homepage: http://xen-tools.org/software/rinse
