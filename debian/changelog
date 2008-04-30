@@ -1,3 +1,10 @@
+rinse (1.1-1) unstable; urgency=medium
+
+  * New upstream release.
+    - Updated handling of Centos5.
+
+ -- Steve Kemp <skx@debian.org>  Sat, 30 Apr 2008 18:44:44 +0000
+
 rinse (1.0-1) unstable; urgency=medium
 
   * New upstream release.
