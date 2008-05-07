@@ -1,3 +1,10 @@
+rinse (1.2-1) unstable; urgency=medium
+
+  * New upstream release.
+    - Support Fedora Core 9
+
+ -- Steve Kemp <skx@debian.org>  Wed, 7 May 2008 18:33:33 +0000
+
 rinse (1.1-1) unstable; urgency=medium
 
   * New upstream release.
