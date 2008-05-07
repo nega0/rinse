@@ -1,7 +1,9 @@
 rinse (1.2-1) unstable; urgency=medium
 
   * New upstream release.
-    - Support Fedora Core 9
+    - Support Fedora Core 9 test preview.
+    - Better caching for FC-8
+    - Code ran through spellchecker + pretty formatter
 
  -- Steve Kemp <skx@debian.org>  Wed, 7 May 2008 18:33:33 +0000
 
