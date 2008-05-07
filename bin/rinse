@@ -76,7 +76,7 @@ Show the version number and exit.
  a minimal working installation of an RPM-based distribution into
  a directory.
 
-  The tool is analagous to the standard Debian GNU/Linux debootstrap
+  The tool is analogous to the standard Debian GNU/Linux debootstrap
  utility.
 
 =cut
@@ -104,7 +104,7 @@ Show the version number and exit.
  may run the following:
 
 
-=for example beging
+=for example begin
 
    rinse --distribution fedora-core-6 --print-uris
 
@@ -169,7 +169,7 @@ my $RELEASE = '0.8';
 
 
 #
-#  Our confiuration options.
+#  Our configuration options.
 #
 my %CONFIG;
 
@@ -278,7 +278,7 @@ unpackPackages( $CONFIG{ 'directory' } );
 
 
 #
-#  Now run the post-installation customization.
+#  Now run the post-installation customisation.
 #
 postInstallationCustomization( $CONFIG{ 'distribution' },
                                $CONFIG{ 'directory' } );
@@ -1039,7 +1039,7 @@ sub unpackPackages
 
 =begin doc
 
-  Run the post-installation customization scripts for the given
+  Run the post-installation customisation scripts for the given
  distribution.
 
 =end doc
