@@ -53,7 +53,7 @@ Show the version number and exit.
 
 =head1 DESCRIPTION
 
-  rinse-unpack is a simple utilty which will "unpack" all the files
+  rinse-unpack is a simple utility which will "unpack" all the files
  in the specified directory.
 
   It isn't used by rinse itself, instead it is supplied as a utility
@@ -105,7 +105,7 @@ my $RELEASE = '0.8';
 
 
 #
-#  Our confiuration options.
+#  Our configuration options.
 #
 my %CONFIG;
 $CONFIG{ 'directory' } = '.';    # default to the current directory.
@@ -144,7 +144,7 @@ convertRPM2TGZ( $CONFIG{ 'directory' } );
 #
 #  Unpack *.tgz
 #
-print "Unpackage *.tgz\n";
+print "Unpacking *.tgz\n";
 unpackTGZ( $CONFIG{ 'directory' } );
 
 
