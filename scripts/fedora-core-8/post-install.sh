@@ -85,8 +85,14 @@ if [ ! -d "${prefix}/proc" ]; then
 fi
 mount -o bind /proc ${prefix}/proc
 
+echo "  Priming the yum cache"
+if [ ! -d "${prefix}/var/cache/yum/core/packages/" ]; then
+	mkdir -p ${prefix}/var/cache/yum/core/packages
+fi
+cp /var/cache/rinse/fedora-core-8.$ARCH/* ${prefix}/var/cache/yum/core/packages/
+
 echo "  Bootstrapping yum"
-chroot ${prefix} /sbin/ldconfig 
+chroot ${prefix} /sbin/ldconfig
 chroot ${prefix} /usr/bin/yum -y install yum         2>/dev/null
 chroot ${prefix} /usr/bin/yum -y install vim-minimal 2>/dev/null
 chroot ${prefix} /usr/bin/yum -y install dhclient    2>/dev/null
@@ -105,7 +111,7 @@ umount ${prefix}/proc
 #  6.  Remove the .rpm files from the prefix root.
 #
 echo "  Final tidy..."
-for i in ${prefix}/*.rpm; do 
+for i in ${prefix}/*.rpm; do
     rm -f $i
 done
 find ${prefix} -name '*.rpmorig' -delete
