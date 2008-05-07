@@ -162,7 +162,6 @@ use LWP::UserAgent;
 
 
 
-
 #
 # Release number.
 #
@@ -177,15 +176,15 @@ my %CONFIG;
 #
 #  Default options.
 #
-$CONFIG{'arch'}      = 'i386';
-$CONFIG{'cache'}     = 1;
-$CONFIG{'cache-dir'} = "/var/cache/rinse/";
+$CONFIG{ 'arch' }      = 'i386';
+$CONFIG{ 'cache' }     = 1;
+$CONFIG{ 'cache-dir' } = "/var/cache/rinse/";
 
 
 #
 #  Find the size of our terminal
 #
-( $CONFIG{'width'}, $CONFIG{'height'} ) = getTerminalSize();
+( $CONFIG{ 'width' }, $CONFIG{ 'height' } ) = getTerminalSize();
 
 
 #
@@ -204,12 +203,12 @@ parseCommandLineArguments();
 #
 #  Handle special case first.
 #
-if ( $CONFIG{'list-distributions'} )
+if ( $CONFIG{ 'list-distributions' } )
 {
     listDistributions();
     exit;
 }
-if ( $CONFIG{'clean-cache'} )
+if ( $CONFIG{ 'clean-cache' } )
 {
     cleanCache();
     exit;
@@ -226,34 +225,35 @@ sanityCheckArguments();
 #  Ensure we're started by root at this point.  This is required
 # to make sure we mount /proc, etc.
 #
-testRootUser() unless( $CONFIG{'print-uris'} );
+testRootUser() unless ( $CONFIG{ 'print-uris' } );
 
 
 #
 #  Make sure the directory we're installing into exists.
 #
-if ( ( !$CONFIG{'print-uris'} ) && ( ! -d $CONFIG{'directory'} ) )
+if ( ( !$CONFIG{ 'print-uris' } ) && ( !-d $CONFIG{ 'directory' } ) )
 {
+
     #
     # Make the directory, including all required parent(s) directories.
     #
-    mkpath( $CONFIG{'directory'}, 0, 0755 );
+    mkpath( $CONFIG{ 'directory' }, 0, 0755 );
 }
 
 
 #
 #  Find the list of packages to download
 #
-my @packages = getDistributionPackageList( $CONFIG{'distribution'} );
+my @packages = getDistributionPackageList( $CONFIG{ 'distribution' } );
 
 
 #
 #  Find the mirror, if not specified already.
 #
-if ( ! $CONFIG{'mirror'} )
+if ( !$CONFIG{ 'mirror' } )
 {
-  $CONFIG{'mirror'} = getDistributionMirror( $CONFIG{'distribution'},
-                                             $CONFIG{'arch'} );
+    $CONFIG{ 'mirror' } =
+      getDistributionMirror( $CONFIG{ 'distribution' }, $CONFIG{ 'arch' } );
 }
 
 
@@ -261,25 +261,27 @@ if ( ! $CONFIG{'mirror'} )
 #
 #  Download the packages into the specified directory
 #
-downloadPackagesToDirectory( $CONFIG{'directory'}, $CONFIG{'mirror'}, @packages );
+downloadPackagesToDirectory( $CONFIG{ 'directory' },
+                             $CONFIG{ 'mirror' }, @packages );
 
 
 #
 #  If we're only printing then exit here.
 #
-exit if ( $CONFIG{'print-uris'} );
+exit if ( $CONFIG{ 'print-uris' } );
 
 
 #
 #  Unpack the packages
 #
-unpackPackages( $CONFIG{'directory'} );
+unpackPackages( $CONFIG{ 'directory' } );
 
 
 #
 #  Now run the post-installation customization.
 #
-postInstallationCustomization( $CONFIG{'distribution'}, $CONFIG{'directory'} );
+postInstallationCustomization( $CONFIG{ 'distribution' },
+                               $CONFIG{ 'directory' } );
 
 
 #
@@ -287,10 +289,6 @@ postInstallationCustomization( $CONFIG{'distribution'}, $CONFIG{'directory'} );
 #
 print "Installation complete.\n";
 exit;
-
-
-
-
 
 
 
@@ -310,10 +308,10 @@ sub testSetup
 
     my @required = qw/ rpm rpm2cpio wget /;
 
-    foreach my $file ( @required )
+    foreach my $file (@required)
     {
-        if ( ( ! -x "/bin/$file" ) &&
-             ( ! -x "/usr/bin/$file" ) )
+        if (    ( !-x "/bin/$file" )
+             && ( !-x "/usr/bin/$file" ) )
         {
             print "The following (required) binary appears to be missing:\n";
             print "\t" . $file . "\n";
@@ -337,7 +335,7 @@ sub testRootUser
 {
     if ( $EFFECTIVE_USER_ID != 0 )
     {
-        print<<E_O_ROOT;
+        print <<E_O_ROOT;
 
   In order to use this script you must be running with root privileges.
 
@@ -369,33 +367,34 @@ sub parseCommandLineArguments
     #  Parse options.
     #
     GetOptions(
-               # Main options
-               "directory=s",        \$CONFIG{'directory'},
-               "distribution=s",     \$CONFIG{'distribution'},
 
-               # Misc options.
-               "arch=s",             \$CONFIG{'arch'},
-               "cache=s",            \$CONFIG{'cache'},
-               "cache-dir=s",        \$CONFIG{'cache-dir'},
-               "clean-cache",        \$CONFIG{'clean-cache'},
-               "list-distributions", \$CONFIG{'list-distributions'},
-               "print-uris",         \$CONFIG{'print-uris'},
+        # Main options
+        "directory=s",    \$CONFIG{ 'directory' },
+        "distribution=s", \$CONFIG{ 'distribution' },
 
-               # Help options
-               "help",         \$HELP,
-               "manual",       \$MANUAL,
-               "verbose",      \$CONFIG{'verbose'},
-               "version",      \$VERSION
+        # Misc options.
+        "arch=s",             \$CONFIG{ 'arch' },
+        "cache=s",            \$CONFIG{ 'cache' },
+        "cache-dir=s",        \$CONFIG{ 'cache-dir' },
+        "clean-cache",        \$CONFIG{ 'clean-cache' },
+        "list-distributions", \$CONFIG{ 'list-distributions' },
+        "print-uris",         \$CONFIG{ 'print-uris' },
 
-              );
+        # Help options
+        "help",    \$HELP,
+        "manual",  \$MANUAL,
+        "verbose", \$CONFIG{ 'verbose' },
+        "version", \$VERSION
+
+    );
 
     pod2usage(1) if $HELP;
-    pod2usage(-verbose => 2 ) if $MANUAL;
+    pod2usage( -verbose => 2 ) if $MANUAL;
 
 
-    if ( $VERSION )
+    if ($VERSION)
     {
-        print( "rinse release $RELEASE\n" );
+        print("rinse release $RELEASE\n");
         exit;
     }
 }
@@ -414,10 +413,11 @@ sub parseCommandLineArguments
 
 sub sanityCheckArguments
 {
+
     #
     #  Distribution is mandatory
     #
-    if ( ! $CONFIG{'distribution'} )
+    if ( !$CONFIG{ 'distribution' } )
     {
         print <<EOF;
 
@@ -436,8 +436,8 @@ EOF
     #  Installation root is mandatory *unless* we're just printing
     # the URLs we'd download
     #
-    if ( ( ! $CONFIG{'directory'} ) &&
-         ( ! $CONFIG{'print-uris'} ) )
+    if (    ( !$CONFIG{ 'directory' } )
+         && ( !$CONFIG{ 'print-uris' } ) )
     {
         print <<EOF;
 
@@ -448,10 +448,10 @@ EOF
         exit;
     }
 
-    if ( $CONFIG{'arch'} )
+    if ( $CONFIG{ 'arch' } )
     {
-        if ( ( $CONFIG{'arch'} ne "i386" ) &&
-             ( $CONFIG{'arch'} ne "amd64" ) )
+        if (    ( $CONFIG{ 'arch' } ne "i386" )
+             && ( $CONFIG{ 'arch' } ne "amd64" ) )
         {
             print <<EOARCH;
 
@@ -487,8 +487,9 @@ sub listDistributions
     #
     #  2.  A scripts directory.  (Even if empty!)
     #
-    foreach my $file ( glob( "/etc/rinse/*.packages" ) )
+    foreach my $file ( glob("/etc/rinse/*.packages") )
     {
+
         #
         #  Get the name - so that we can test for the directory.
         #
@@ -498,10 +499,10 @@ sub listDistributions
         }
     }
 
-    if ( @avail )
+    if (@avail)
     {
         print "The following distributions are available:\n";
-        foreach my $a ( @avail )
+        foreach my $a (@avail)
         {
             print "\t$a\n";
         }
@@ -520,7 +521,7 @@ sub listDistributions
 
 sub cleanCache
 {
-    my $dir = $CONFIG{'cache-dir'};
+    my $dir = $CONFIG{ 'cache-dir' };
 
     #
     #  Nested function to remove .rpm files.
@@ -530,8 +531,8 @@ sub cleanCache
         my $file = $File::Find::name;
         if ( $file =~ /\.rpm$/ )
         {
-            $CONFIG{'verbose'} && print "Removing: $file\n";
-            unlink( $file );
+            $CONFIG{ 'verbose' } && print "Removing: $file\n";
+            unlink($file);
         }
     }
 
@@ -557,11 +558,11 @@ sub cleanCache
 
 sub getDistributionPackageList
 {
-    my( $distribution ) = (@_);
+    my ($distribution) = (@_);
 
     my $file = "/etc/rinse/$distribution.packages";
 
-    if ( ! -e $file )
+    if ( !-e $file )
     {
         print <<EOF;
 
@@ -584,21 +585,21 @@ EOF
 
 
     open( FILE, "<", $file ) or die "Failed to open $file - $!";
-    foreach my $line ( <FILE> )
+    foreach my $line (<FILE>)
     {
         next if ( !$line );
-        chomp( $line );
+        chomp($line);
         next if ( $line =~ /^#/ );
-        next if ( !length( $line ) );
+        next if ( !length($line) );
 
         push( @packages, $line );
     }
-    close( FILE );
+    close(FILE);
 
     #
     #  Return the list in a sorted fashion.
     #
-    return( sort {lc($a) cmp lc($b) } @packages );
+    return ( sort {lc($a) cmp lc($b)} @packages );
 }
 
 
@@ -613,11 +614,11 @@ EOF
 
 sub getDistributionMirror
 {
-    my( $dist, $arch ) = (@_);
+    my ( $dist, $arch ) = (@_);
 
     my $file = "/etc/rinse/rinse.conf";
 
-    if ( ! -e $file )
+    if ( !-e $file )
     {
         print <<EOF;
 
@@ -645,11 +646,11 @@ EOF
     #
     my %options;
 
-    foreach my $line ( <INPUT> )
+    foreach my $line (<INPUT>)
     {
-        next if ( !$line || !length($line ) );
+        next if ( !$line || !length($line) );
         next if $line =~ /^#/;
-        chomp( $line );
+        chomp($line);
 
         if ( $line =~ /^\[([^]]+)\]/ )
         {
@@ -673,17 +674,17 @@ EOF
             $val =~ s/^\s+//;
             $val =~ s/\s+$//;
 
-            $options{$key} = $val;
+            $options{ $key } = $val;
         }
     }
-    close( INPUT );
+    close(INPUT);
 
     #
     #  Did we find it?
     #
     my $key = "mirror." . $arch;
-    return( $options{$key} )     if ( $options{$key} );
-    return( $options{'mirror'} ) if ( $options{'mirror'} );
+    return ( $options{ $key } ) if ( $options{ $key } );
+    return ( $options{ 'mirror' } ) if ( $options{ 'mirror' } );
 
     #
     #  Error if we didn't.
@@ -713,7 +714,7 @@ EOF
 
 sub downloadPackagesToDirectory
 {
-    my( $dir, $mirror, @packages ) = ( @_ );
+    my ( $dir, $mirror, @packages ) = (@_);
 
     #
     #  Cache directory.
@@ -724,14 +725,16 @@ sub downloadPackagesToDirectory
     #  Unless we've been told not to then copy packages from
     # the cache.
     #
-    if ( ( $CONFIG{'cache'} ) && !$CONFIG{'print-uris'} )
+    if ( ( $CONFIG{ 'cache' } ) && !$CONFIG{ 'print-uris' } )
     {
+
         #
         #  Make sure we have a cache directory.
         #
         if ( -d $cache )
         {
-            $CONFIG{'verbose'} && print "Copying files from cache directory: $cache\n";
+            $CONFIG{ 'verbose' }
+              && print "Copying files from cache directory: $cache\n";
             copyPackageFiles( $cache, $dir );
         }
     }
@@ -739,7 +742,7 @@ sub downloadPackagesToDirectory
     #
     #  Find the links available for download on our mirror.
     #
-    my %links = findMirrorContents( $mirror );
+    my %links = findMirrorContents($mirror);
 
 
     #
@@ -752,17 +755,18 @@ sub downloadPackagesToDirectory
     #
     #  Process each package we're supposed to fetch.
     #
-    foreach my $package ( @packages )
+    foreach my $package (@packages)
     {
         my $found = 0;
 
-        $CONFIG{'verbose'} && print "-Download $package\n";
+        $CONFIG{ 'verbose' } && print "-Download $package\n";
 
         #
         # Find the candidate package to download from our list of links.
         #
         foreach my $key ( keys %links )
         {
+
             #
             #  If we have haven't found the package yet, and the name
             # of the link is *longer* than the name of the package we're
@@ -770,38 +774,40 @@ sub downloadPackagesToDirectory
             #
             #  (ie. to cope with -$ver.$arch.$rpm).
             #
-            if ( ( ! $found ) &&
-                 ( length( $key ) > length( $package ) ) )
+            if (    ( !$found )
+                 && ( length($key) > length($package) ) )
             {
-                # get the substring of the link we've got
-                my $pre = substr( $key, 0, length( $package ) );
-                my $post= substr( $key, length( $package ), 2 );
 
-                if ( ( lc( $pre ) eq lc( $package ) ) &&
-                     $post =~ /-[0-9]/ )
+                # get the substring of the link we've got
+                my $pre = substr( $key, 0, length($package) );
+                my $post = substr( $key, length($package), 2 );
+
+                if ( ( lc($pre) eq lc($package) )
+                     && $post =~ /-[0-9]/ )
                 {
                     $found += 1;
 
-                    if ( $CONFIG{'print-uris'} )
+                    if ( $CONFIG{ 'print-uris' } )
                     {
                         print $mirror . "/" . $key . "\n";
                     }
                     else
                     {
+
                         #
                         #  Print message and padding.
                         #
-                        my $msg =  "\r[$count:$total] Downloading: $key ..";
-                        while( length( $msg ) < ( $CONFIG{'width'} -1) )
+                        my $msg = "\r[$count:$total] Downloading: $key ..";
+                        while ( length($msg) < ( $CONFIG{ 'width' } - 1 ) )
                         {
                             $msg .= " ";
                         }
                         print $msg;
 
                         # download - unless already present.
-                        if ( ! -e "$dir/$key" )
+                        if ( !-e "$dir/$key" )
                         {
-                            system( "wget --quiet -O $dir/$key $mirror/$key" );
+                            system("wget --quiet -O $dir/$key $mirror/$key");
                         }
                     }
                 }
@@ -814,27 +820,28 @@ sub downloadPackagesToDirectory
             print "[Harmless] Failed to find download link for $package\n";
         }
 
-        $CONFIG{'verbose'} && print "+Download $package\n";
+        $CONFIG{ 'verbose' } && print "+Download $package\n";
 
         $count += 1;
     }
 
     # newline.
     print "\r";
-    print " " x ($CONFIG{'width'} - 1 );
+    print " " x ( $CONFIG{ 'width' } - 1 );
     print "\n";
 
     #
     #  Now update the cache.
     #
-    if ( ( $CONFIG{'cache'} ) && !$CONFIG{'print-uris'} )
+    if ( ( $CONFIG{ 'cache' } ) && !$CONFIG{ 'print-uris' } )
     {
-        $CONFIG{'verbose'} && print "Copying files to cache directory: $cache\n";
+        $CONFIG{ 'verbose' }
+          && print "Copying files to cache directory: $cache\n";
 
         #
         #  Make sure we have a cache directory.
         #
-        mkpath( $cache, 0, 0755 ) if ( ! -d $cache );
+        mkpath( $cache, 0, 0755 ) if ( !-d $cache );
 
         copyPackageFiles( $dir, $cache );
     }
@@ -853,12 +860,12 @@ sub downloadPackagesToDirectory
 
 sub findMirrorContents
 {
-    my ( $mirror ) = ( @_ );
+    my ($mirror) = (@_);
 
     #
     #  Download
     #
-    my $index = downloadURL( $mirror );
+    my $index = downloadURL($mirror);
 
     #
     #  Now we want to store all the links we've found.
@@ -870,6 +877,7 @@ sub findMirrorContents
     #
     foreach my $line ( split( /\n/, $index ) )
     {
+
         #
         #  Look for contents of the form:
         #
@@ -878,7 +886,7 @@ sub findMirrorContents
         while ( $line =~ /href=\"([^\"]+)\">(.*)/i )
         {
             my $link = $1;
-            $line    = $2;
+            $line = $2;
 
             # strip any path from the link.
             $link = $2 if ( $link =~ /^(.*)\/(.*)$/ );
@@ -887,10 +895,10 @@ sub findMirrorContents
             next if ( $link !~ /\.rpm$/i );
 
             #  Decode entities.  eg. libstd++
-            $link = uri_unescape( $link );
+            $link = uri_unescape($link);
 
             # store
-            $links{$link} = 1;
+            $links{ $link } = 1;
         }
     }
 
@@ -901,25 +909,26 @@ sub findMirrorContents
     # then we need to *only* return those things.
     #
     my $i386 = undef;
-    $i386 = 1 if ( $CONFIG{'arch'} =~ /i386/ );
-    $i386 = 0 if ( $CONFIG{'arch'} =~ /amd64/ );
+    $i386 = 1 if ( $CONFIG{ 'arch' } =~ /i386/ );
+    $i386 = 0 if ( $CONFIG{ 'arch' } =~ /amd64/ );
 
     foreach my $key ( sort keys %links )
     {
+
         # i386/i486/i586/i686 packages when we're dealing with amd64 installs.
         if ( ( $key =~ /\.i[3456]86\./ ) && !$i386 )
         {
-            delete( $links{$key} );
+            delete( $links{ $key } );
         }
 
         # amd64 packages when we're dealing with i386 installs.
         if ( $key =~ /\.x86_64\./ && ($i386) )
         {
-            delete( $links{$key} );
+            delete( $links{ $key } );
         }
     }
 
-    return( %links );
+    return (%links);
 }
 
 
@@ -934,7 +943,7 @@ sub findMirrorContents
 
 sub downloadURL
 {
-    my( $URL ) = ( @_ );
+    my ($URL) = (@_);
 
     #
     #  Create the helper.
@@ -946,19 +955,19 @@ sub downloadURL
     #
     #  Fetch the URI
     #
-    my $response = $ua->get( $URL );
+    my $response = $ua->get($URL);
 
     #
     #  If it worked then return it
     #
-    if ($response->is_success)
+    if ( $response->is_success )
     {
-        return( $response->content );
+        return ( $response->content );
     }
     else
     {
         print "Failed to fetch : $URL\n";
-        print  "\t" . $response->status_line . "\n\n";
+        print "\t" . $response->status_line . "\n\n";
         exit;
     }
 }
@@ -977,20 +986,20 @@ sub downloadURL
 
 sub unpackPackages
 {
-    my( $dir ) = ( @_ );
+    my ($dir) = (@_);
 
     #
     #  Get a sorted list of the RPMs
     #
     my @rpms = glob( $dir . "/*.rpm" );
-    @rpms    = sort {lc($a) cmp lc($b) } @rpms;
+    @rpms = sort {lc($a) cmp lc($b)} @rpms;
 
     #
     #  For each RPM file: convert to .tgz
     #
-    foreach my $file ( @rpms )
+    foreach my $file (@rpms)
     {
-        $CONFIG{'verbose'} && print "-extract $file\n";
+        $CONFIG{ 'verbose' } && print "-extract $file\n";
 
         #
         #  Show status
@@ -1004,8 +1013,8 @@ sub unpackPackages
         #
         #  Show status output.
         #
-        my $msg =  "\rExtracting .rpm file : $name";
-        while( length( $msg ) < ( $CONFIG{'width'} -1) )
+        my $msg = "\rExtracting .rpm file : $name";
+        while ( length($msg) < ( $CONFIG{ 'width' } - 1 ) )
         {
             $msg .= " ";
         }
@@ -1014,13 +1023,14 @@ sub unpackPackages
         #
         #  Run the unpacking command.
         #
-        my $cmd = "rpm2cpio $file | (cd $CONFIG{'directory'} ; cpio --extract --make-directories --no-absolute-filenames --preserve-modification-time) 2>/dev/null >/dev/null";
-        system( $cmd );
+        my $cmd =
+"rpm2cpio $file | (cd $CONFIG{'directory'} ; cpio --extract --make-directories --no-absolute-filenames --preserve-modification-time) 2>/dev/null >/dev/null";
+        system($cmd );
 
-        $CONFIG{'verbose'} && print "+extract $file\n";
+        $CONFIG{ 'verbose' } && print "+extract $file\n";
     }
     print "\r";
-    print " " x $CONFIG{'width'};
+    print " " x $CONFIG{ 'width' };
     print "\n";
 
 }
@@ -1038,22 +1048,22 @@ sub unpackPackages
 
 sub postInstallationCustomization
 {
-    my( $distribution, $prefix ) = (@_);
+    my ( $distribution, $prefix ) = (@_);
 
     my $scriptDir = "/usr/lib/rinse/$distribution/";
 
     #
     #  Setup environment for the post-install scripts.
     #
-    $ENV{'ARCH'}      = $CONFIG{'arch'};
-    $ENV{'mirror'}    = $CONFIG{'mirror'};
-    $ENV{'dist'}      = $CONFIG{'distribution'};
-    $ENV{'directory'} = $CONFIG{'directory'};
+    $ENV{ 'ARCH' }      = $CONFIG{ 'arch' };
+    $ENV{ 'mirror' }    = $CONFIG{ 'mirror' };
+    $ENV{ 'dist' }      = $CONFIG{ 'distribution' };
+    $ENV{ 'directory' } = $CONFIG{ 'directory' };
 
 
     foreach my $file ( sort( glob( $scriptDir . "/*" ) ) )
     {
-        $CONFIG{'verbose'} && print "-script $file\n";
+        $CONFIG{ 'verbose' } && print "-script $file\n";
 
         #
         #  Report on progress all the time.
@@ -1065,9 +1075,9 @@ sub postInstallationCustomization
         }
         print "Running post-install script $name:\n";
         my $cmd = "$file $prefix";
-        system( $cmd );
+        system($cmd );
 
-        $CONFIG{'verbose'} && print "+script $file\n";
+        $CONFIG{ 'verbose' } && print "+script $file\n";
     }
 }
 
@@ -1083,12 +1093,13 @@ sub postInstallationCustomization
 
 sub copyPackageFiles
 {
-    my( $src, $dest ) = (@_);
+    my ( $src, $dest ) = (@_);
 
-    $CONFIG{'verbose'} && print "- archiving from $src - $dest\n";
+    $CONFIG{ 'verbose' } && print "- archiving from $src - $dest\n";
 
     foreach my $file ( sort( glob( $src . "/*.rpm" ) ) )
     {
+
         # strip path.
         if ( $file =~ /^(.*)\/(.*)$/ )
         {
@@ -1099,16 +1110,14 @@ sub copyPackageFiles
         # if the file isn't already present in the destination then
         # copy it there.
         #
-        if ( ! -e $dest . "/" . $file )
+        if ( !-e $dest . "/" . $file )
         {
-            copy( $src  . "/" . $file,
-                  $dest . "/" . $file );
+            copy( $src . "/" . $file, $dest . "/" . $file );
         }
     }
 
-    $CONFIG{'verbose'} && print "+ archiving from $src - $dest\n";
+    $CONFIG{ 'verbose' } && print "+ archiving from $src - $dest\n";
 }
-
 
 
 
@@ -1125,7 +1134,7 @@ sub copyPackageFiles
 
 sub getTerminalSize
 {
-    my $testModule  = "use Term::Size;";
+    my $testModule = "use Term::Size;";
 
     my $width  = 80;
     my $height = 25;
@@ -1134,20 +1143,21 @@ sub getTerminalSize
     #  Test loading the size module.  If this fails
     # then we will use the defaults sizes.
     #
-    eval( $testModule );
-    if ( $@ )
+    eval($testModule);
+    if ($@)
     {
     }
     else
     {
+
         #
         # Term::Size is available, so use it to find
         # the current terminal size.
         #
-        ($width, $height ) = Term::Size::chars();
+        ( $width, $height ) = Term::Size::chars();
     }
 
-    return( $width, $height );
+    return ( $width, $height );
 }
 
 
@@ -1169,14 +1179,16 @@ sub getTerminalSize
 
 sub uri_unescape
 {
+
     # Note from RFC1630:  "Sequences which start with a percent sign
     # but are not followed by two hexadecimal characters are reserved
     # for future extension"
     my $str = shift;
-    if (@_ && wantarray)
+    if ( @_ && wantarray )
     {
+
         # not executed for the common case of a single argument
-        my @str = ($str, @_);  # need to copy
+        my @str = ( $str, @_ );    # need to copy
         foreach (@str)
         {
             s/%([0-9A-Fa-f]{2})/chr(hex($1))/eg;

@@ -98,7 +98,6 @@ use Pod::Usage;
 
 
 
-
 #
 # Release number.
 #
@@ -109,7 +108,7 @@ my $RELEASE = '0.8';
 #  Our confiuration options.
 #
 my %CONFIG;
-$CONFIG{'directory'} = '.';   # default to the current directory.
+$CONFIG{ 'directory' } = '.';    # default to the current directory.
 
 
 #
@@ -128,7 +127,7 @@ parseCommandLineArguments();
 #
 #  Make sure the directory we've been given actually exists.
 #
-if ( ! -d $CONFIG{'directory'} )
+if ( !-d $CONFIG{ 'directory' } )
 {
     print "The directory specified doesn't exist.  Aborting\n";
     exit;
@@ -139,14 +138,14 @@ if ( ! -d $CONFIG{'directory'} )
 #  Convert *.rpm -> *.tgz
 #
 print "Converting *.rpm -> *.tgz\n";
-convertRPM2TGZ( $CONFIG{'directory'} );
+convertRPM2TGZ( $CONFIG{ 'directory' } );
 
 
 #
 #  Unpack *.tgz
 #
 print "Unpackage *.tgz\n";
-unpackTGZ( $CONFIG{'directory'} );
+unpackTGZ( $CONFIG{ 'directory' } );
 
 
 #
@@ -154,8 +153,6 @@ unpackTGZ( $CONFIG{'directory'} );
 #
 print "Unpacking complete\n";
 exit;
-
-
 
 
 
@@ -169,14 +166,16 @@ exit;
 
 sub convertRPM2TGZ
 {
-    my( $directory ) = ( @_ );
+    my ($directory) = (@_);
 
     foreach my $file ( sort( glob( $directory . "/*.rpm" ) ) )
     {
+
         # convert
-        system( "cd $directory && alien --to-tgz $file 2>/dev/null >/dev/null" );
+        system("cd $directory && alien --to-tgz $file 2>/dev/null >/dev/null");
+
         # delete
-        unlink( $file ) unless( $CONFIG{'keep-rpm'} );
+        unlink($file) unless ( $CONFIG{ 'keep-rpm' } );
     }
 }
 
@@ -192,15 +191,16 @@ sub convertRPM2TGZ
 
 sub unpackTGZ
 {
-    my( $directory ) = ( @_ );
+    my ($directory) = (@_);
 
     foreach my $file ( sort( glob( $directory . "/*.tgz" ) ) )
     {
+
         # unpack
-        system( "cd $directory && tar -zxf $file 2>/dev/null >/dev/null" );
+        system("cd $directory && tar -zxf $file 2>/dev/null >/dev/null");
 
         # delete
-        unlink( $file ) unless( $CONFIG{'keep-tgz'} );
+        unlink($file) unless ( $CONFIG{ 'keep-tgz' } );
     }
 }
 
@@ -222,10 +222,10 @@ sub testSetup
 
     my @required = qw/ alien rpm wget /;
 
-    foreach my $file ( @required )
+    foreach my $file (@required)
     {
-        if ( ( ! -x "/bin/$file" ) &&
-             ( ! -x "/usr/bin/$file" ) )
+        if (    ( !-x "/bin/$file" )
+             && ( !-x "/usr/bin/$file" ) )
         {
             print "The following (required) binary appears to be missing:\n";
             print "\t" . $file . "\n";
@@ -255,28 +255,29 @@ sub parseCommandLineArguments
     #  Parse options.
     #
     GetOptions(
-               # Main options
-               "directory=s",  \$CONFIG{'directory'},
 
-               # misc options
-               "keep-rpm",     \$CONFIG{'keep-rpm'},
-               "keep-tgz",     \$CONFIG{'keep-tgz'},
+        # Main options
+        "directory=s", \$CONFIG{ 'directory' },
 
-               # Help options
-               "help",         \$HELP,
-               "manual",       \$MANUAL,
-               "verbose",      \$CONFIG{'verbose'},
-               "version",      \$VERSION
+        # misc options
+        "keep-rpm", \$CONFIG{ 'keep-rpm' },
+        "keep-tgz", \$CONFIG{ 'keep-tgz' },
 
-              );
+        # Help options
+        "help",    \$HELP,
+        "manual",  \$MANUAL,
+        "verbose", \$CONFIG{ 'verbose' },
+        "version", \$VERSION
+
+    );
 
     pod2usage(1) if $HELP;
-    pod2usage(-verbose => 2 ) if $MANUAL;
+    pod2usage( -verbose => 2 ) if $MANUAL;
 
 
-    if ( $VERSION )
+    if ($VERSION)
     {
-        print( "rinse-unpack release $RELEASE\n" );
+        print("rinse-unpack release $RELEASE\n");
         exit;
     }
 }
