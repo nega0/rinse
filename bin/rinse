@@ -395,13 +395,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.31 $';
-        if ( $REVISION =~ /1.([0-9.]+) / )
-        {
-            $REVISION = $1;
-        }
-
-        print( "rinse release $RELEASE - CVS: $REVISION\n" );
+        print( "rinse release $RELEASE\n" );
         exit;
     }
 }

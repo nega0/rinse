@@ -276,13 +276,7 @@ sub parseCommandLineArguments
 
     if ( $VERSION )
     {
-        my $REVISION      = '$Revision: 1.6 $';
-        if ( $REVISION =~ /1.([0-9.]+) / )
-        {
-            $REVISION = $1;
-        }
-
-        print( "rinse-unpack release $RELEASE - CVS: $REVISION\n" );
+        print( "rinse-unpack release $RELEASE\n" );
         exit;
     }
 }
