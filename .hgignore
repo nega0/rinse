@@ -2,3 +2,5 @@
 (^|/)\.hg($|/)
 (^|/)\.hgtags($|/)
 debian/files
+debian/rinse/*
+(build|configure)-stamp
