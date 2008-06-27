@@ -77,4 +77,5 @@ tzdata
 udev
 util-linux
 yum
+yum-metadata-parser
 zlib
