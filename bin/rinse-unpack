@@ -101,7 +101,7 @@ use Pod::Usage;
 #
 # Release number.
 #
-my $RELEASE = '0.8';
+my $RELEASE = 'XXUNRELEASEDXX';
 
 
 #
