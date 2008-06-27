@@ -90,6 +90,7 @@ release: clean
 	perl -pi -e "s/XXUNRELEASEDXX/$(VERSION)/g" $(DIST_PREFIX)/$(BASE)-$(VERSION)/bin/rinse*
 	rm -rf $(DIST_PREFIX)/$(BASE)-$(VERSION)/debian
 	rm -rf $(DIST_PREFIX)/$(BASE)-$(VERSION)/.hg*
+	rm -rf $(DIST_PREFIX)/$(BASE)-$(VERSION)/.release
 	cd $(DIST_PREFIX) && tar -cvf $(DIST_PREFIX)/$(BASE)-$(VERSION).tar $(BASE)-$(VERSION)/
 	gzip $(DIST_PREFIX)/$(BASE)-$(VERSION).tar
 	mv $(DIST_PREFIX)/$(BASE)-$(VERSION).tar.gz .
