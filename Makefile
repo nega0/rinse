@@ -87,6 +87,7 @@ release: clean
 	rm -rf $(DIST_PREFIX)/$(BASE)-$(VERSION)
 	rm -f $(DIST_PREFIX)/$(BASE)-$(VERSION).tar.gz
 	cp -R . $(DIST_PREFIX)/$(BASE)-$(VERSION)
+	perl -pi -e "s/XXUNRELEASEDXX/$(VERSION)/g" $(DIST_PREFIX)/$(BASE)-$(VERSION)/bin/rinse*
 	rm -rf $(DIST_PREFIX)/$(BASE)-$(VERSION)/debian
 	rm -rf $(DIST_PREFIX)/$(BASE)-$(VERSION)/.hg*
 	cd $(DIST_PREFIX) && tar -cvf $(DIST_PREFIX)/$(BASE)-$(VERSION).tar $(BASE)-$(VERSION)/
