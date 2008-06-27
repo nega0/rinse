@@ -1,3 +1,12 @@
+rinse (1.3) unstable; urgency=medium
+
+  * New upstream release.
+    - Add support for the first release of Fedora Core 9.
+  * Updated to standards version 3.8.0.
+    - No changes
+
+ -- Steve Kemp <skx@debian.org>  Fri, 27 Jun 2008 15:44:51 +0000
+
 rinse (1.2-1) unstable; urgency=medium
 
   * New upstream release.
