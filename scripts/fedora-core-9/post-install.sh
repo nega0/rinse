@@ -68,7 +68,7 @@ assumeyes=1
 
 [core]
 name=core
-baseurl=http://ftp.heanet.ie/pub/fedora/linux/releases/test/9-Preview/Fedora/$arch/os
+baseurl=http://mirror.bytemark.co.uk/fedora/linux/releases/9/Fedora/$arch/os
 
 EOF
 
