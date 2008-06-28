@@ -11,7 +11,7 @@ if [ ! -d "${prefix}" ]; then
 fi
 
 arch=i386
-if [ $ARCH == "amd64" ] ; then
+if [ $ARCH = "amd64" ] ; then
        arch=x86_64
 fi
 

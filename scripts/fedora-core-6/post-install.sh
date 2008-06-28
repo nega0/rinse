@@ -48,7 +48,7 @@ done
 #  3.  Ensure that Yum has a working configuration file.
 #
 arch=i386
-if [ $ARCH == "amd64" ] ; then
+if [ $ARCH = "amd64" ] ; then
     arch=x86_64
 fi
 
@@ -86,7 +86,7 @@ fi
 mount -o bind /proc ${prefix}/proc
 
 echo "  Bootstrapping yum"
-chroot ${prefix} /sbin/ldconfig 
+chroot ${prefix} /sbin/ldconfig
 chroot ${prefix} /usr/bin/yum -y install yum         2>/dev/null
 chroot ${prefix} /usr/bin/yum -y install vim-minimal 2>/dev/null
 chroot ${prefix} /usr/bin/yum -y install dhclient    2>/dev/null
@@ -105,7 +105,7 @@ umount ${prefix}/proc
 #  6.  Remove the .rpm files from the prefix root.
 #
 echo "  Final tidy..."
-for i in ${prefix}/*.rpm; do 
+for i in ${prefix}/*.rpm; do
     rm -f $i
 done
 find ${prefix} -name '*.rpmorig' -delete

@@ -29,6 +29,6 @@ for i in `rgrep '^use ' .. | grep -v Expect | awk '{print $2}' | tr -d \;\(\) |
     do \
      echo "BEGIN{ use_ok( '$i' ); }"; \
      echo "require_ok( '$i' );" ; \
-     echo -e "\n" ; \
+     print "\n" ; \
 done
 

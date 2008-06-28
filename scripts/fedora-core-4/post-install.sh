@@ -48,7 +48,7 @@ done
 #  3.  Ensure that Yum has a working configuration file.
 #
 arch=i386
-if [ $ARCH == "amd64" ] ; then
+if [ $ARCH = "amd64" ] ; then
     arch=x86_64
 fi
 
@@ -105,7 +105,7 @@ umount ${prefix}/proc
 #  6.  Remove the .rpm files from the prefix root.
 #
 echo "  Final tidy..."
-for i in ${prefix}/*.rpm; do 
+for i in ${prefix}/*.rpm; do
     rm -f $i
 done
 find ${prefix} -name '*.rpmorig' -delete
