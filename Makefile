@@ -63,11 +63,11 @@ fixupperms:
 install: fixupperms install-manpage
 	mkdir -p ${PREFIX}/etc/bash_completion.d
 	mkdir -p ${PREFIX}/etc/rinse
-	mkdir -p ${PREFIX}/usr/bin
+	mkdir -p ${PREFIX}/usr/sbin
 	mkdir -p ${PREFIX}/usr/lib/rinse
 	mkdir -p ${PREFIX}/var/cache/rinse
-	cp bin/rinse ${PREFIX}/usr/bin/
-	chmod 755 ${PREFIX}/usr/bin/rinse
+	cp bin/rinse ${PREFIX}/usr/sbin/
+	chmod 755 ${PREFIX}/usr/sbin/rinse
 	cp etc/*.packages ${PREFIX}/etc/rinse
 	cp etc/*.conf     ${PREFIX}/etc/rinse
 	for i in scripts/*/; do name=`basename $$i`; if [ "$$name" != "CVS" ]; then mkdir -p ${PREFIX}/usr/lib/rinse/$$name  ; cp $$i/*.sh ${PREFIX}/usr/lib/rinse/$$name ; fi ; done
@@ -124,7 +124,7 @@ update:
 #  Remove the software.
 #
 uninstall:
-	rm -f  ${PREFIX}/usr/bin/rinse
+	rm -f  ${PREFIX}/usr/sbin/rinse
 	rm -f  ${PREFIX}/etc/rinse/*.conf
 	rm -f  ${PREFIX}/etc/rinse/*.packages
 	rm -rf ${PREFIX}/var/cache/rinse
