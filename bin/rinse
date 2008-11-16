@@ -24,6 +24,7 @@ rinse - RPM Installation Entity.
    --clean-cache         Clean our cache of .rpm files.
    --list-distributions  Show installable distributions.
    --print-uris          Only show the RPMs which should be downloaded.
+   --add-pkg-list        Additional packages to download and install
 
 =cut
 
@@ -34,6 +35,9 @@ rinse - RPM Installation Entity.
 
 =item B<--arch>
 Specify the architecture to install.  Valid choices are 'amd64' and 'i386' only.
+
+=item B<--add-pkg-list>
+Add a list of additional packages.
 
 =item B<--cache>
 Specify whether to cache packages (1) or not (0).
@@ -310,8 +314,8 @@ sub testSetup
 
     foreach my $file (@required)
     {
-        if (    ( !-x "/bin/$file" )
-             && ( !-x "/usr/bin/$file" ) )
+        if ( ( !-x "/bin/$file" ) &&
+             ( !-x "/usr/bin/$file" ) )
         {
             print "The following (required) binary appears to be missing:\n";
             print "\t" . $file . "\n";
@@ -379,6 +383,7 @@ sub parseCommandLineArguments
         "clean-cache",        \$CONFIG{ 'clean-cache' },
         "list-distributions", \$CONFIG{ 'list-distributions' },
         "print-uris",         \$CONFIG{ 'print-uris' },
+        "add-pkg-list=s",     \$CONFIG{ 'add-pkg-list' },
 
         # Help options
         "help",    \$HELP,
@@ -436,8 +441,8 @@ EOF
     #  Installation root is mandatory *unless* we're just printing
     # the URLs we'd download
     #
-    if (    ( !$CONFIG{ 'directory' } )
-         && ( !$CONFIG{ 'print-uris' } ) )
+    if ( ( !$CONFIG{ 'directory' } ) &&
+         ( !$CONFIG{ 'print-uris' } ) )
     {
         print <<EOF;
 
@@ -450,8 +455,8 @@ EOF
 
     if ( $CONFIG{ 'arch' } )
     {
-        if (    ( $CONFIG{ 'arch' } ne "i386" )
-             && ( $CONFIG{ 'arch' } ne "amd64" ) )
+        if ( ( $CONFIG{ 'arch' } ne "i386" ) &&
+             ( $CONFIG{ 'arch' } ne "amd64" ) )
         {
             print <<EOARCH;
 
@@ -562,6 +567,9 @@ sub getDistributionPackageList
 
     my $file = "/etc/rinse/$distribution.packages";
 
+    my @additional;
+    my $adt_file = $CONFIG{ 'add-pkg-list' };
+
     if ( !-e $file )
     {
         print <<EOF;
@@ -571,6 +579,17 @@ sub getDistributionPackageList
   We expected to find:
 
     $file
+
+  Aborting.
+
+EOF
+        exit;
+    }
+
+    if ( ($adt_file) && ( !-e $adt_file ) )
+    {
+        print <<EOF;
+  The file $adt_file was not found.
 
   Aborting.
 
@@ -595,6 +614,21 @@ EOF
         push( @packages, $line );
     }
     close(FILE);
+
+    if ($adt_file)
+    {
+        open( ADT, "<", $adt_file ) or die "Failed to open $adt_file - $!";
+        foreach my $line (<ADT>)
+        {
+            next if ( !$line );
+            chomp($line);
+            next if ( $line =~ /^#/ );
+            next if ( !length($line) );
+
+            push( @packages, $line );
+        }
+        close(ADT);
+    }
 
     #
     #  Return the list in a sorted fashion.
@@ -733,8 +767,8 @@ sub downloadPackagesToDirectory
         #
         if ( -d $cache )
         {
-            $CONFIG{ 'verbose' }
-              && print "Copying files from cache directory: $cache\n";
+            $CONFIG{ 'verbose' } &&
+              print "Copying files from cache directory: $cache\n";
             copyPackageFiles( $cache, $dir );
         }
     }
@@ -774,16 +808,16 @@ sub downloadPackagesToDirectory
             #
             #  (ie. to cope with -$ver.$arch.$rpm).
             #
-            if (    ( !$found )
-                 && ( length($key) > length($package) ) )
+            if ( ( !$found ) &&
+                 ( length($key) > length($package) ) )
             {
 
                 # get the substring of the link we've got
                 my $pre = substr( $key, 0, length($package) );
                 my $post = substr( $key, length($package), 2 );
 
-                if ( ( lc($pre) eq lc($package) )
-                     && $post =~ /-[0-9]/ )
+                if ( ( lc($pre) eq lc($package) ) &&
+                     $post =~ /-[0-9]/ )
                 {
                     $found += 1;
 
@@ -835,8 +869,8 @@ sub downloadPackagesToDirectory
     #
     if ( ( $CONFIG{ 'cache' } ) && !$CONFIG{ 'print-uris' } )
     {
-        $CONFIG{ 'verbose' }
-          && print "Copying files to cache directory: $cache\n";
+        $CONFIG{ 'verbose' } &&
+          print "Copying files to cache directory: $cache\n";
 
         #
         #  Make sure we have a cache directory.
@@ -1024,7 +1058,7 @@ sub unpackPackages
         #  Run the unpacking command.
         #
         my $cmd =
-"rpm2cpio $file | (cd $CONFIG{'directory'} ; cpio --extract --make-directories --no-absolute-filenames --preserve-modification-time) 2>/dev/null >/dev/null";
+          "rpm2cpio $file | (cd $CONFIG{'directory'} ; cpio --extract --make-directories --no-absolute-filenames --preserve-modification-time) 2>/dev/null >/dev/null";
         system($cmd );
 
         $CONFIG{ 'verbose' } && print "+extract $file\n";
