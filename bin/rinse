@@ -22,6 +22,8 @@ rinse - RPM Installation Entity.
    --cache               Should we use a local cache?  (Default is 1)
    --cache-dir           Specify the directory we should use for the cache.
    --clean-cache         Clean our cache of .rpm files.
+   --config              Specify a different configuration file.
+                         (Default is /etc/rinse/rinse.conf)
    --list-distributions  Show installable distributions.
    --print-uris          Only show the RPMs which should be downloaded.
    --add-pkg-list        Additional packages to download and install
@@ -183,6 +185,7 @@ my %CONFIG;
 $CONFIG{ 'arch' }      = 'i386';
 $CONFIG{ 'cache' }     = 1;
 $CONFIG{ 'cache-dir' } = "/var/cache/rinse/";
+$CONFIG{ 'config'}     = "/etc/rinse/rinse.conf";
 
 
 #
@@ -371,6 +374,9 @@ sub parseCommandLineArguments
     #  Parse options.
     #
     GetOptions(
+
+        # configuration options
+        "config=s",        \$CONFIG{'config'},
 
         # Main options
         "directory=s",    \$CONFIG{ 'directory' },
@@ -650,17 +656,13 @@ sub getDistributionMirror
 {
     my ( $dist, $arch ) = (@_);
 
-    my $file = "/etc/rinse/rinse.conf";
+    my $file = $CONFIG{'config'};
 
     if ( !-e $file )
     {
         print <<EOF;
 
-  The configuration file was not found.
-
-  We expected to find:
-
-    $file
+  The configuration file $CONFIG{'config'} was not found.
 
   Aborting.
 
