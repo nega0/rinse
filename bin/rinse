@@ -187,7 +187,7 @@ my %CONFIG;
 $CONFIG{ 'arch' }      = 'i386';
 $CONFIG{ 'cache' }     = 1;
 $CONFIG{ 'cache-dir' } = "/var/cache/rinse/";
-$CONFIG{ 'config'}     = "/etc/rinse/rinse.conf";
+$CONFIG{ 'config' }    = "/etc/rinse/rinse.conf";
 
 
 #
@@ -378,7 +378,7 @@ sub parseCommandLineArguments
     GetOptions(
 
         # configuration options
-        "config=s",        \$CONFIG{'config'},
+        "config=s", \$CONFIG{ 'config' },
 
         # Main options
         "directory=s",    \$CONFIG{ 'directory' },
@@ -391,7 +391,7 @@ sub parseCommandLineArguments
         "clean-cache",        \$CONFIG{ 'clean-cache' },
         "list-distributions", \$CONFIG{ 'list-distributions' },
         "print-uris",         \$CONFIG{ 'print-uris' },
-        "post-install=s",     \$CONFIG{ 'post-install'},
+        "post-install=s",     \$CONFIG{ 'post-install' },
         "add-pkg-list=s",     \$CONFIG{ 'add-pkg-list' },
 
         # Help options
@@ -659,7 +659,7 @@ sub getDistributionMirror
 {
     my ( $dist, $arch ) = (@_);
 
-    my $file = $CONFIG{'config'};
+    my $file = $CONFIG{ 'config' };
 
     if ( !-e $file )
     {
@@ -1105,12 +1105,12 @@ sub postInstallationCustomization
     #
     #  Did we get a custom file to execute?
     #
-    if ( ( defined $CONFIG{'post-install'} )  &&
-         ( -x $CONFIG{'post-install'} ) )
+    if ( ( defined $CONFIG{ 'post-install' } ) &&
+         ( -x $CONFIG{ 'post-install' } ) )
     {
         print "Running custom script: $CONFIG{'post-install'}\n";
 
-        system( $CONFIG{'post-install'}, $prefix );
+        system( $CONFIG{ 'post-install' }, $prefix );
         return;
     }
 
