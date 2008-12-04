@@ -26,6 +26,8 @@ rinse - RPM Installation Entity.
                          (Default is /etc/rinse/rinse.conf)
    --list-distributions  Show installable distributions.
    --print-uris          Only show the RPMs which should be downloaded.
+   --post-install        Run the given post-install script instead of the
+                         default files in /usr/lib/rinse/$distro
    --add-pkg-list        Additional packages to download and install
 
 =cut
@@ -389,6 +391,7 @@ sub parseCommandLineArguments
         "clean-cache",        \$CONFIG{ 'clean-cache' },
         "list-distributions", \$CONFIG{ 'list-distributions' },
         "print-uris",         \$CONFIG{ 'print-uris' },
+        "post-install=s",     \$CONFIG{ 'post-install'},
         "add-pkg-list=s",     \$CONFIG{ 'add-pkg-list' },
 
         # Help options
@@ -1078,6 +1081,9 @@ sub unpackPackages
   Run the post-installation customisation scripts for the given
  distribution.
 
+  We might have been given a distinct file to run, instead of the
+ default via --post-install.
+
 =end doc
 
 =cut
@@ -1086,7 +1092,6 @@ sub postInstallationCustomization
 {
     my ( $distribution, $prefix ) = (@_);
 
-    my $scriptDir = "/usr/lib/rinse/$distribution/";
 
     #
     #  Setup environment for the post-install scripts.
@@ -1096,6 +1101,24 @@ sub postInstallationCustomization
     $ENV{ 'dist' }      = $CONFIG{ 'distribution' };
     $ENV{ 'directory' } = $CONFIG{ 'directory' };
 
+
+    #
+    #  Did we get a custom file to execute?
+    #
+    if ( ( defined $CONFIG{'post-install'} )  &&
+         ( -x $CONFIG{'post-install'} ) )
+    {
+        print "Running custom script: $CONFIG{'post-install'}\n";
+
+        system( $CONFIG{'post-install'}, $prefix );
+        return;
+    }
+
+
+    #
+    #  OK we run the per-distro file(s) installed
+    #
+    my $scriptDir = "/usr/lib/rinse/$distribution/";
 
     foreach my $file ( sort( glob( $scriptDir . "/*" ) ) )
     {
