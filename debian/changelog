@@ -1,8 +1,8 @@
-rinse (1.4-2) unstable; urgency=medium
+rinse (1.5-1) unstable; urgency=medium
 
-  * Added stub support for Fedora Core 10
+  * Added support for Fedora Core 10
 
- -- Steve Kemp <skx@debian.org>  Sun, 17 Dec 2008 19:40:00 +0000
+ -- Steve Kemp <skx@debian.org>  Sat, 20 Dec 2008 23:00:32 +0000
 
 rinse (1.4-1) unstable; urgency=medium
 
