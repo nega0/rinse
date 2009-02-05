@@ -8,16 +8,32 @@ rinse - RPM Installation Entity.
 
   rinse [options]
 
+
   Help Options:
    --help     Show help information.
    --manual   Read the manual for this script.
    --version  Show the version information and exit.
 
+
   Mandatory Options:
+
    --directory    The directory to install the distribution within.
    --distribution The distribution to install.
 
+
+  Customization Options:
+
+   --add-pkg-list        Additional packages to download and install
+
+   --after-post-install  Additionally run the specified script after
+                         the post install script.
+   --before-post-install Additionally run the specified script before
+                         the post install script.
+   --post-install        Run the given post-install script instead of the
+                         default files in /usr/lib/rinse/$distro
+
   Misc Options:
+
    --arch                Specify the architecture to install.
    --cache               Should we use a local cache?  (Default is 1)
    --cache-dir           Specify the directory we should use for the cache.
@@ -26,10 +42,7 @@ rinse - RPM Installation Entity.
                          (Default is /etc/rinse/rinse.conf)
    --list-distributions  Show installable distributions.
    --print-uris          Only show the RPMs which should be downloaded.
-   --post-install        Run the given post-install script instead of the
                          default files in /usr/lib/rinse/$distro
-   --add-pkg-list        Additional packages to download and install
-
 =cut
 
 
@@ -385,14 +398,16 @@ sub parseCommandLineArguments
         "distribution=s", \$CONFIG{ 'distribution' },
 
         # Misc options.
-        "arch=s",             \$CONFIG{ 'arch' },
-        "cache=s",            \$CONFIG{ 'cache' },
-        "cache-dir=s",        \$CONFIG{ 'cache-dir' },
-        "clean-cache",        \$CONFIG{ 'clean-cache' },
-        "list-distributions", \$CONFIG{ 'list-distributions' },
-        "print-uris",         \$CONFIG{ 'print-uris' },
-        "post-install=s",     \$CONFIG{ 'post-install' },
-        "add-pkg-list=s",     \$CONFIG{ 'add-pkg-list' },
+        "arch=s",                \$CONFIG{ 'arch' },
+        "cache=s",               \$CONFIG{ 'cache' },
+        "cache-dir=s",           \$CONFIG{ 'cache-dir' },
+        "clean-cache",           \$CONFIG{ 'clean-cache' },
+        "list-distributions",    \$CONFIG{ 'list-distributions' },
+        "print-uris",            \$CONFIG{ 'print-uris' },
+        "post-install=s",        \$CONFIG{ 'post-install' },
+        "before-post-install=s", \$CONFIG{ 'before-post-install' },
+        "after-post-install=s",  \$CONFIG{ 'after-post-install' },
+        "add-pkg-list=s",        \$CONFIG{ 'add-pkg-list' },
 
         # Help options
         "help",    \$HELP,
@@ -1084,6 +1099,9 @@ sub unpackPackages
   We might have been given a distinct file to run, instead of the
  default via --post-install.
 
+ Or we might have pre/post post-install scripts to run if the
+ options --before-post-install or --after-post-install were used
+
 =end doc
 
 =cut
@@ -1101,6 +1119,17 @@ sub postInstallationCustomization
     $ENV{ 'dist' }      = $CONFIG{ 'distribution' };
     $ENV{ 'directory' } = $CONFIG{ 'directory' };
 
+
+    #
+    #  Did we get a custom file to execute before?
+    #
+    if ( ( defined $CONFIG{ 'before-post-install' } ) &&
+         ( -x $CONFIG{ 'before-post-install' } ) )
+    {
+        print "Running custom script: $CONFIG{'before-post-install'}\n";
+
+        system( $CONFIG{ 'before-post-install' }, $prefix );
+    }
 
     #
     #  Did we get a custom file to execute?
@@ -1138,6 +1167,18 @@ sub postInstallationCustomization
 
         $CONFIG{ 'verbose' } && print "+script $file\n";
     }
+
+    #
+    #  Did we get a custom file to execute after?
+    #
+    if ( ( defined $CONFIG{ 'after-post-install' } ) &&
+         ( -x $CONFIG{ 'after-post-install' } ) )
+    {
+        print "Running custom script: $CONFIG{'after-post-install'}\n";
+
+        system( $CONFIG{ 'after-post-install' }, $prefix );
+    }
+
 }
 
 
