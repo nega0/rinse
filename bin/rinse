@@ -177,10 +177,10 @@ use English;
 use File::Copy;
 use File::Path;
 use File::Find;
+use File::Basename;
 use Getopt::Long;
 use Pod::Usage;
 use LWP::UserAgent;
-
 
 
 #
@@ -576,7 +576,7 @@ sub cleanCache
 
 =begin doc
 
-  Return the list of packagse which are required for a basic
+  Return the list of packages which are required for a basic
  installation of the specified distribution.
 
   These packages are located in the configuration file in /etc/rinse.
@@ -800,7 +800,7 @@ sub downloadPackagesToDirectory
 
 
     #
-    #  Count of links, and the currently active download.
+    # Count of links, and the currently active download.
     # Used purely for the status updates..
     #
     my $count = 0;
@@ -1048,6 +1048,9 @@ sub unpackPackages
     my @rpms = glob( $dir . "/*.rpm" );
     @rpms = sort {lc($a) cmp lc($b)} @rpms;
 
+    # Command to execute after extraction
+    my $postcmd = "";
+
     #
     #  For each RPM file: convert to .tgz
     #
@@ -1079,6 +1082,12 @@ sub unpackPackages
         #
         my $cmd =
           "rpm2cpio $file | (cd $CONFIG{'directory'} ; cpio --extract --make-directories --no-absolute-filenames --preserve-modification-time) 2>/dev/null >/dev/null";
+        if ( $file =~ /(fedora|centos|redhat|mandriva)-release-/ )
+        {
+            my $rpmname = basename($file);
+            $postcmd =
+              "cp $file $CONFIG{'directory'}/tmp ; chroot $CONFIG{'directory'} rpm -ivh --force --nodeps /tmp/$rpmname ; rm $CONFIG{'directory'}/tmp/$rpmname";
+        }
         system($cmd );
 
         $CONFIG{ 'verbose' } && print "+extract $file\n";
@@ -1087,6 +1096,18 @@ sub unpackPackages
     print " " x $CONFIG{ 'width' };
     print "\n";
 
+    #
+    # In order to be setup correctly, yum needs an installed package
+    # providing distroverpkg this is provided by a *-release package
+    # such as redhat-release, centos-release, fedora-release ...
+    #
+    # So here we force the install with rpm of the one we previously found
+    #
+    if ( $postcmd ne "" )
+    {
+        system($postcmd);
+        $CONFIG{ 'verbose' } && print "+execute $postcmd\n";
+    }
 }
 
 

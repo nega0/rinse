@@ -10,12 +10,6 @@ if [ ! -d "${prefix}" ]; then
   exit
 fi
 
-arch=i386
-if [ $ARCH = "amd64" ] ; then
-       arch=x86_64
-fi
-
-
 #
 #  1.  Make sure there is a resolv.conf file present, such that
 #     DNS lookups succeed.
@@ -34,11 +28,6 @@ for i in ${prefix}/usr/lib/python2.4/site-packages/urlgrabber/keepalive.*; do
     mv $i ${prefix}/usr/lib/python2.4/site-packages/urlgrabber.skx/
 done
 
-# 3.6 BUGFIX: yumrepo
-echo "BUGFIX: yumrepo"
-chroot ${prefix} sed -i s/\$releasever/5/g /etc/yum.repos.d/CentOS-Base.repo
-chroot ${prefix} sed -i s/\$basearch/$arch/g /etc/yum.repos.d/CentOS-Base.repo
-#
 #
 #  4.  Run "yum install yum".
 #
