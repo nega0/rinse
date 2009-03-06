@@ -1,3 +1,9 @@
+rinse (1.6-1) unstable; urgency=low
+
+  * Add support for openSuSE 10.1-11.1
+
+ -- Thayne Harbaugh <thayne_atsymbol_fusionio_com>  Fri, 06 Mar 2009 16:35:42 -0700
+
 rinse (1.5-1) unstable; urgency=medium
 
   * Added support for Fedora Core 10
