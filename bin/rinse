@@ -40,6 +40,8 @@ rinse - RPM Installation Entity.
    --clean-cache         Clean our cache of .rpm files.
    --config              Specify a different configuration file.
                          (Default is /etc/rinse/rinse.conf)
+   --pkgs-dir            Specify a different directory containing
+                         <distribution>.packages files.
    --list-distributions  Show installable distributions.
    --print-uris          Only show the RPMs which should be downloaded.
                          default files in /usr/lib/rinse/$distro
@@ -201,6 +203,7 @@ $CONFIG{ 'arch' }      = 'i386';
 $CONFIG{ 'cache' }     = 1;
 $CONFIG{ 'cache-dir' } = "/var/cache/rinse/";
 $CONFIG{ 'config' }    = "/etc/rinse/rinse.conf";
+$CONFIG{ 'pkgs-dir' }  = "/etc/rinse";
 
 
 #
@@ -391,7 +394,8 @@ sub parseCommandLineArguments
     GetOptions(
 
         # configuration options
-        "config=s", \$CONFIG{ 'config' },
+        "config=s",   \$CONFIG{ 'config' },
+        "pkgs-dir=s", \$CONFIG{ 'pkgs-dir' },
 
         # Main options
         "directory=s",    \$CONFIG{ 'directory' },
@@ -516,7 +520,7 @@ sub listDistributions
     #
     #  2.  A scripts directory.  (Even if empty!)
     #
-    foreach my $file ( glob("/etc/rinse/*.packages") )
+    foreach my $file ( glob("$CONFIG{'pkgs-dir'}/*.packages") )
     {
 
         #
@@ -589,7 +593,7 @@ sub getDistributionPackageList
 {
     my ($distribution) = (@_);
 
-    my $file = "/etc/rinse/$distribution.packages";
+    my $file = "$CONFIG{'pkgs-dir'}/$distribution.packages";
 
     my @additional;
     my $adt_file = $CONFIG{ 'add-pkg-list' };
@@ -809,10 +813,9 @@ sub downloadPackagesToDirectory
     #
     #  Process each package we're supposed to fetch.
     #
+  PACKAGE:
     foreach my $package (@packages)
     {
-        my $found = 0;
-
         $CONFIG{ 'verbose' } && print "-Download $package\n";
 
         #
@@ -820,62 +823,90 @@ sub downloadPackagesToDirectory
         #
         foreach my $key ( keys %links )
         {
+            # Matching a package to a key from the URL relies on packages
+            # being named in the defacto RPM way:
+            #
+            #    <name>-<version>-<release>.<arch>.rpm
+            #
+            # Unfortunately the version and release are unknown (and can
+            # change) and therefore cannot be used to compare - they must
+            # be discarded.  The string can be split on '-' to find the
+            # version and release.  The name portion should exactly match
+            # the package and the remainder 
 
-            #
-            #  If we have haven't found the package yet, and the name
-            # of the link is *longer* than the name of the package we're
-            # looking for.
-            #
-            #  (ie. to cope with -$ver.$arch.$rpm).
-            #
-            if ( ( !$found ) &&
-                 ( length($key) > length($package) ) )
+            # See if the key is long enough to be split and still have
+            # '-<version>-<release>.<arch>.rpm'
+            if ( length($key) <= length($package) )
             {
-
-                # get the substring of the link we've got
-                my $pre = substr( $key, 0, length($package) );
-                my $post = substr( $key, length($package), 2 );
-
-                if ( ( lc($pre) eq lc($package) ) &&
-                     $post =~ /-[0-9]/ )
-                {
-                    $found += 1;
-
-                    if ( $CONFIG{ 'print-uris' } )
-                    {
-                        print $mirror . "/" . $key . "\n";
-                    }
-                    else
-                    {
-
-                        #
-                        #  Print message and padding.
-                        #
-                        my $msg = "\r[$count:$total] Downloading: $key ..";
-                        while ( length($msg) < ( $CONFIG{ 'width' } - 1 ) )
-                        {
-                            $msg .= " ";
-                        }
-                        print $msg;
-
-                        # download - unless already present.
-                        if ( !-e "$dir/$key" )
-                        {
-                            system("wget --quiet -O $dir/$key $mirror/$key");
-                        }
-                    }
-                }
+                next;
             }
 
+            my $name_part = substr($key, 0, length($package));
+
+            # See if the name part compares
+            if ( $name_part ne $package )
+            {
+                next;
+            }
+
+            my $remainder_part  = substr($key, length($package));
+            my @remainder_parts = split(/-/, $remainder_part);
+
+            # See if there are exactly three elements leftover and if they are
+            # a reasonable approximation of what is expected:
+            #
+            # ''                   The remainder part starts with '-'
+            # <version>
+            # <release>.<arch>.rpm
+
+            my $arch = $CONFIG{'arch'};
+            if ($CONFIG{'arch'} eq 'amd64')
+            {
+                $arch = 'x86_64';
+            }
+
+            if ( $#remainder_parts != 2
+                || $remainder_parts[0] ne ''
+                || $remainder_parts[1] !~ /^[\d\w][\d\w.+]*$/
+                || $remainder_parts[2] !~ /^[\d\w][\d\w.+]*\.$arch\.rpm$/
+                )
+            {
+                # Don't have enough parts or they don't look right
+                next;
+            }
+
+            # Match found!
+
+            if ( $CONFIG{ 'print-uris' } )
+            {
+                print $mirror . "/" . $key . "\n";
+            }
+            else
+            {
+
+                #
+                #  Print message and padding.
+                #
+                my $msg = "\r[$count:$total] Downloading: $key ..";
+                while ( length($msg) < ( $CONFIG{ 'width' } - 1 ) )
+                {
+                    $msg .= " ";
+                }
+                print $msg;
+
+                # download - unless already present.
+                if ( !-e "$dir/$key" )
+                {
+                    system("wget --quiet -O $dir/$key $mirror/$key");
+                }
+            }
+            $CONFIG{ 'verbose' } && print "+Download $package\n";
+            next PACKAGE;
         }
-
-        if ( !$found )
-        {
-            print "[Harmless] Failed to find download link for $package\n";
-        }
-
-        $CONFIG{ 'verbose' } && print "+Download $package\n";
-
+        print "[Harmless] Failed to find download link for $package\n";
+    }
+    continue
+    {
         $count += 1;
     }
 
@@ -970,13 +1001,13 @@ sub findMirrorContents
     {
 
         # i386/i486/i586/i686 packages when we're dealing with amd64 installs.
-        if ( ( $key =~ /\.i[3456]86\./ ) && !$i386 )
+        if ( ( $key =~ /\.i[3456]86\.rpm/ ) && !$i386 )
         {
             delete( $links{ $key } );
         }
 
         # amd64 packages when we're dealing with i386 installs.
-        if ( $key =~ /\.x86_64\./ && ($i386) )
+        if ( $key =~ /\.x86_64\.rpm/ && ($i386) )
         {
             delete( $links{ $key } );
         }
@@ -1139,6 +1170,7 @@ sub postInstallationCustomization
     $ENV{ 'mirror' }    = $CONFIG{ 'mirror' };
     $ENV{ 'dist' }      = $CONFIG{ 'distribution' };
     $ENV{ 'directory' } = $CONFIG{ 'directory' };
+    $ENV{ 'cache_dir' } = $CONFIG{ 'cache-dir' };
 
 
     #
