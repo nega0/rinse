@@ -868,7 +868,7 @@ sub downloadPackagesToDirectory
             if ( $#remainder_parts != 2
                 || $remainder_parts[0] ne ''
                 || $remainder_parts[1] !~ /^[\d\w][\d\w.+]*$/
-                || $remainder_parts[2] !~ /^[\d\w][\d\w.+]*\.$arch\.rpm$/
+                || $remainder_parts[2] !~ /^[\d\w][\d\w.+]*\.(${arch}|noarch)\.rpm$/
                 )
             {
                 # Don't have enough parts or they don't look right
