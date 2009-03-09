@@ -224,8 +224,8 @@ sub testSetup
 
     foreach my $file (@required)
     {
-        if (    ( !-x "/bin/$file" )
-             && ( !-x "/usr/bin/$file" ) )
+        if ( ( !-x "/bin/$file" ) &&
+             ( !-x "/usr/bin/$file" ) )
         {
             print "The following (required) binary appears to be missing:\n";
             print "\t" . $file . "\n";

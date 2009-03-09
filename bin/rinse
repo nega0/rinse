@@ -823,6 +823,7 @@ sub downloadPackagesToDirectory
         #
         foreach my $key ( keys %links )
         {
+
             # Matching a package to a key from the URL relies on packages
             # being named in the defacto RPM way:
             #
@@ -832,7 +833,7 @@ sub downloadPackagesToDirectory
             # change) and therefore cannot be used to compare - they must
             # be discarded.  The string can be split on '-' to find the
             # version and release.  The name portion should exactly match
-            # the package and the remainder 
+            # the package and the remainder
 
             # See if the key is long enough to be split and still have
             # '-<version>-<release>.<arch>.rpm'
@@ -841,7 +842,7 @@ sub downloadPackagesToDirectory
                 next;
             }
 
-            my $name_part = substr($key, 0, length($package));
+            my $name_part = substr( $key, 0, length($package) );
 
             # See if the name part compares
             if ( $name_part ne $package )
@@ -849,8 +850,8 @@ sub downloadPackagesToDirectory
                 next;
             }
 
-            my $remainder_part  = substr($key, length($package));
-            my @remainder_parts = split(/-/, $remainder_part);
+            my $remainder_part = substr( $key, length($package) );
+            my @remainder_parts = split( /-/, $remainder_part );
 
             # See if there are exactly three elements leftover and if they are
             # a reasonable approximation of what is expected:
@@ -859,18 +860,19 @@ sub downloadPackagesToDirectory
             # <version>
             # <release>.<arch>.rpm
 
-            my $arch = $CONFIG{'arch'};
-            if ($CONFIG{'arch'} eq 'amd64')
+            my $arch = $CONFIG{ 'arch' };
+            if ( $CONFIG{ 'arch' } eq 'amd64' )
             {
                 $arch = 'x86_64';
             }
 
-            if ( $#remainder_parts != 2
-                || $remainder_parts[0] ne ''
-                || $remainder_parts[1] !~ /^[\d\w][\d\w.+]*$/
-                || $remainder_parts[2] !~ /^[\d\w][\d\w.+]*\.(${arch}|noarch)\.rpm$/
-                )
+            if ( $#remainder_parts != 2 ||
+                 $remainder_parts[0] ne '' ||
+                 $remainder_parts[1] !~ /^[\d\w][\d\w.+]*$/ ||
+                 $remainder_parts[2] !~
+                 /^[\d\w][\d\w.+]*\.(${arch}|noarch)\.rpm$/ )
             {
+
                 # Don't have enough parts or they don't look right
                 next;
             }
