@@ -484,14 +484,16 @@ EOF
     if ( $CONFIG{ 'arch' } )
     {
         if ( ( $CONFIG{ 'arch' } ne "i386" ) &&
-             ( $CONFIG{ 'arch' } ne "amd64" ) )
+             ( $CONFIG{ 'arch' } ne "amd64" ) &&
+             ( $CONFIG{ 'arch' } ne "x86_64" ) )
+
         {
             print <<EOARCH;
 
   Only two architectures are supported:
 
    i386
-   amd64
+   amd64 or x86_64
 
 EOARCH
             exit;
