@@ -19,6 +19,7 @@ db4
 device-mapper
 e2fsprogs
 elfutils-libelf
+e2fsprogs-libs
 ethtool
 expat
 filesystem
