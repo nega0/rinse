@@ -4,7 +4,7 @@ rinse (1.7-1) unstable; urgency=low
     (Closes: #524486)
   * Avoid hardwired mirrors in the post-install scripts.
 
- -- Steve Kemp <steve@steve.org.uk>  Tue, 21 Apr 2009 19:18:17 -0000
+ -- Steve Kemp <skx@debian.org>  Tue, 21 Apr 2009 19:18:17 -0000
 
 rinse (1.6-1) unstable; urgency=low
 
