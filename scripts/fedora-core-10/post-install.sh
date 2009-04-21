@@ -68,7 +68,7 @@ assumeyes=1
 
 [core]
 name=core
-baseurl=http://mirrors.vexs.net/pub/fedora/linux/releases/10/Fedora/$arch/os
+baseurl=$mirror
 
 EOF
 

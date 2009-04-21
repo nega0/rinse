@@ -68,11 +68,11 @@ assumeyes=1
 
 [core]
 name=core
-baseurl=http://mirror.bytemark.co.uk/fedora/linux/releases/7/Fedora/$arch/os
+baseurl=$mirror
 
 [updates-released]
 name=updates
-baseurl=http://mirror.bytemark.co.uk/fedora/linux/releases/7/Fedora/$arch/os
+baseurl=$mirror
 EOF
 
 

@@ -68,7 +68,7 @@ assumeyes=1
 
 [core]
 name=core
-baseurl=http://mirror.bytemark.co.uk/fedora/linux/releases/9/Fedora/$arch/os
+baseurl=$mirror
 
 EOF
 
