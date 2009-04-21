@@ -1,3 +1,11 @@
+rinse (1.7-1) unstable; urgency=low
+
+  * Added missing packages so that Centos 5.x will install.
+    (Closes: #524486)
+  * Avoid hardwired mirrors in the post-install scripts.
+
+ -- Steve Kemp <steve@steve.org.uk>  Tue, 21 Apr 2009 19:18:17 -0000
+
 rinse (1.6-1) unstable; urgency=low
 
   * Add support for openSuSE 10.1-11.1
