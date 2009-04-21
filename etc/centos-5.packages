@@ -53,6 +53,8 @@ module-init-tools
 ncurses
 neon
 net-tools
+nss
+nspr
 openssl
 pam
 pcre
@@ -63,6 +65,7 @@ python
 python-elementtree
 python-sqlite
 python-urlgrabber
+python-iniparse
 readline
 rpm
 rpm-libs
