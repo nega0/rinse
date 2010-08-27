@@ -65,6 +65,9 @@ install: fixupperms install-manpage
 	mkdir -p ${PREFIX}/etc/rinse
 	mkdir -p ${PREFIX}/usr/sbin
 	mkdir -p ${PREFIX}/usr/lib/rinse
+	mkdir -p ${PREFIX}/usr/lib/rinse/common
+	cp ./scripts.common/* ${PREFIX}/usr/lib/rinse/common
+	chmod 755 ${PREFIX}/usr/lib/rinse/common/*.sh
 	mkdir -p ${PREFIX}/var/cache/rinse
 	cp bin/rinse ${PREFIX}/usr/sbin/
 	chmod 755 ${PREFIX}/usr/sbin/rinse
