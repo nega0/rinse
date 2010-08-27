@@ -1,3 +1,10 @@
+rinse (1.7-2) unstable; urgency=high
+
+  * Install a modprobe.conf when possible.
+    (Closes: #588030)
+
+ -- Steve Kemp <skx@debian.org>  Fri, 27 Aug 2010 22:11:22 +0000
+
 rinse (1.7-1) unstable; urgency=low
 
   * Added missing packages so that Centos 5.x will install.
