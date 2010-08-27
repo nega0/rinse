@@ -10,23 +10,6 @@ if [ ! -d "${prefix}" ]; then
   exit
 fi
 
-# There's no pre-existing /dev/zero nor is there one from the packages that are already unpacked.
-echo "  Creating devices in /dev"
-if ! [ -e "${prefix}/dev/zero" ]; then
-    mknod -m 666 "${prefix}/dev/zero" c 1 5
-fi
-
-#
-#  1.  Make sure there is a resolv.conf file present, such that
-#     DNS lookups succeed.
-#
-echo "  Creating resolv.conf"
-if [ ! -d "${prefix}/etc/" ]; then
-    mkdir -p "${prefix}/etc/"
-fi
-cp /etc/resolv.conf "${prefix}/etc/"
-
-
 #
 #  2.  Copy the cached .RPM files into the zypper directory, so that
 #     zypper doesn't need to fetch them again.
@@ -62,12 +45,6 @@ EOF
 #
 #  4.  Run "zypper install zypper".
 #
-echo "  Mounting /proc"
-if [ ! -d "${prefix}/proc" ]; then
-    mkdir -p "${prefix}/proc"
-fi
-mount -o bind /proc ${prefix}/proc
-
 # FIXME - Figure out a better way to bootstrap/prime zypper so it doesn't take so long
 echo "  Bootstrapping zypper - this will take some time!"
 chroot ${prefix} /sbin/ldconfig
@@ -83,8 +60,8 @@ chroot ${prefix} /bin/sh -c "/usr/bin/yes | /usr/bin/zypper update"             
 #
 echo "  Cleaning up"
 rm -f ${prefix}/var/cache/zypp/packages/opensuse/suse/${arch}/*.rpm
-
 umount ${prefix}/proc
+umount ${prefix}/sys
 
 
 #

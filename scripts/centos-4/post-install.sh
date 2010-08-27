@@ -12,33 +12,13 @@ fi
 
 
 
-#
-#  1.  Make sure there is a resolv.conf file present, such that
-#     DNS lookups succeed.
-#
-echo "  Creating resolv.conf"
-if [ ! -d "${prefix}/etc/" ]; then
-    mkdir -p "${prefix}/etc/"
-fi
-cp /etc/resolv.conf "${prefix}/etc/"
-
-
-#
-#  4.  Run "yum install yum".
-#
-echo "  Mounting /proc"
-if [ ! -d "${prefix}/proc" ]; then
-    mkdir -p "${prefix}/proc"
-fi
-mount -o bind /proc ${prefix}/proc
-
 echo "  Bootstrapping yum"
 chroot ${prefix} /usr/bin/yum -y install yum passwd 2>/dev/null
 chroot ${prefix} /usr/bin/yum -y install vim-minimal dhclient 2>/dev/null
 
 
 #
-#  4.5 make 'passwd' work.
+#  make 'passwd' work.
 #
 echo "  Authfix"
 chroot ${prefix} /usr/bin/yum -y install authconfig
@@ -46,11 +26,12 @@ chroot ${prefix} /usr/bin/authconfig --enableshadow --update
 
 
 #
-#  5.  Clean up
+#  Clean up
 #
 echo "  Cleaning up"
 chroot ${prefix} /usr/bin/yum clean all
 umount ${prefix}/proc
+umount ${prefix}/sys
 
 
 #

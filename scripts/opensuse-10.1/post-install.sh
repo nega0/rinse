@@ -13,24 +13,6 @@ if [ ! -d "${prefix}" ]; then
 fi
 
 
-# There's no pre-existing /dev/zero nor is there one from the packages that are already unpacked.
-echo "  Creating devices in /dev"
-if ! [ -e "${prefix}/dev/zero" ]; then
-    mknod -m 666 "${prefix}/dev/zero" c 1 5
-fi
-
-
-#
-#  1.  Make sure there is a resolv.conf file present, such that
-#     DNS lookups succeed.
-#
-echo "  Creating resolv.conf"
-if [ ! -d "${prefix}/etc/" ]; then
-    mkdir -p "${prefix}/etc/"
-fi
-cp /etc/resolv.conf "${prefix}/etc/"
-
-
 #
 #  2.  Copy the cached .RPM files into the yum directory, so that
 #     yum doesn't need to make them again.
@@ -85,12 +67,6 @@ EOF
 #
 #  4.  Run "yum install yum".
 #
-echo "  Mounting /proc"
-if [ ! -d "${prefix}/proc" ]; then
-    mkdir -p "${prefix}/proc"
-fi
-mount -o bind /proc ${prefix}/proc
-
 echo "  Priming the yum cache"
 if [ ! -d "${prefix}/var/cache/yum/core/packages/" ]; then
     mkdir -p ${prefix}/var/cache/yum/core/packages
@@ -110,8 +86,8 @@ chroot ${prefix} /usr/bin/yum -y update              2>/dev/null
 #
 echo "  Cleaning up"
 chroot ${prefix} /usr/bin/yum clean all
-
 umount ${prefix}/proc
+umount ${prefix}/sys
 
 
 #

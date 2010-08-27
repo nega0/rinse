@@ -1206,14 +1206,16 @@ sub postInstallationCustomization
     # common files.
     #
     my @scripts;
-    push( @scripts, "/usr/lib/rinse/" . lc ( $distribution ) );
     push( @scripts, "/usr/lib/rinse/common" );
+    push( @scripts, "/usr/lib/rinse/" . lc ( $distribution ) );
 
     #
     #  For each one
     #
     foreach my $script ( @scripts )
     {
+        $CONFIG{'verbose'} && print "Dir: $script\n";
+
         foreach my $file ( sort( glob( $script . "/*" ) ) )
         {
             $CONFIG{ 'verbose' } && print "-script $file\n";
