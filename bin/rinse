@@ -1202,28 +1202,38 @@ sub postInstallationCustomization
 
 
     #
-    #  OK we run the per-distro file(s) installed
+    #  OK we run the per-distro file(s), along with any
+    # common files.
     #
-    my $scriptDir = "/usr/lib/rinse/$distribution/";
+    my @scripts;
+    push( @scripts, "/usr/lib/rinse/" . lc ( $distribution ) );
+    push( @scripts, "/usr/lib/rinse/common" );
 
-    foreach my $file ( sort( glob( $scriptDir . "/*" ) ) )
+    #
+    #  For each one
+    #
+    foreach my $script ( @scripts )
     {
-        $CONFIG{ 'verbose' } && print "-script $file\n";
-
-        #
-        #  Report on progress all the time.
-        #
-        my $name = $file;
-        if ( $name =~ /(.*)\/(.*)/ )
+        foreach my $file ( sort( glob( $script . "/*" ) ) )
         {
-            $name = $2;
-        }
-        print "Running post-install script $name:\n";
-        my $cmd = "$file $prefix";
-        system($cmd );
+            $CONFIG{ 'verbose' } && print "-script $file\n";
 
-        $CONFIG{ 'verbose' } && print "+script $file\n";
+            #
+            #  Report on progress all the time.
+            #
+            my $name = $file;
+            if ( $name =~ /(.*)\/(.*)/ )
+            {
+                $name = $2;
+            }
+            print "Running post-install script $name:\n";
+            my $cmd = "$file $prefix";
+            system($cmd );
+
+            $CONFIG{ 'verbose' } && print "+script $file\n";
+        }
     }
+
 
     #
     #  Did we get a custom file to execute after?
