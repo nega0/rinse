@@ -19,13 +19,12 @@ clean:
 	dh_testdir
 	dh_testroot
 	make clean
-	rm -f build-stamp configure-stamp
 	dh_clean
 
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 
 	make install PREFIX=`pwd`/debian/rinse
 
