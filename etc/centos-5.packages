@@ -64,6 +64,7 @@ procps
 psmisc
 python
 python-elementtree
+python-libs
 python-sqlite
 python-urlgrabber
 python-iniparse

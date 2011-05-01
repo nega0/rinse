@@ -1,3 +1,9 @@
+rinse (1.8-1) unstable; urgency=low
+
+  * centos-5.packages: add missing lib (closes: #623387)
+
+ -- Thomas Lange <lange@debian.org>  Sun, 01 May 2011 13:16:51 +0200
+
 rinse (1.7-2) unstable; urgency=high
 
   * Install a modprobe.conf when possible.
