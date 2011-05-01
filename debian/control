@@ -1,5 +1,5 @@
 Source: rinse
-Maintainer: Steve Kemp <skx@debian.org>
+Maintainer: Thomas Lange <lange@debian.org>
 Section: admin
 Priority: extra
 Standards-Version: 3.8.1
