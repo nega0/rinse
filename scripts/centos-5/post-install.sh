@@ -10,6 +10,8 @@ if [ ! -d "${prefix}" ]; then
   exit
 fi
 
+# rpm's can now be removed
+rm -f ${prefix}/*.rpm
 
 #
 #  BUGFIX:
@@ -24,9 +26,7 @@ done
 #  Run "yum install yum".
 #
 echo "  Bootstrapping yum"
-chroot ${prefix} /usr/bin/yum -y install yum         2>/dev/null
-chroot ${prefix} /usr/bin/yum -y install vim-minimal 2>/dev/null
-chroot ${prefix} /usr/bin/yum -y install dhclient    2>/dev/null
+chroot ${prefix} /usr/bin/yum -y install yum vim-minimal dhclient 2>/dev/null
 
 #
 #  make 'passwd' work.
@@ -48,9 +48,6 @@ umount ${prefix}/sys
 #  6.  Remove the .rpm files from the prefix root.
 #
 echo "  Final tidy..."
-for i in ${prefix}/*.rpm; do
-    rm -f $i
-done
 find ${prefix} -name '*.rpmorig' -delete
 find ${prefix} -name '*.rpmnew' -delete
 
