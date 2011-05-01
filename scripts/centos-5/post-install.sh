@@ -53,3 +53,8 @@ for i in ${prefix}/*.rpm; do
 done
 find ${prefix} -name '*.rpmorig' -delete
 find ${prefix} -name '*.rpmnew' -delete
+
+# Install modprobe
+if [ -e "${prefix}/etc/modprobe.d/modprobe.conf.dist" ]; then
+    cp  "${prefix}/etc/modprobe.d/modprobe.conf.dist" "${prefix}/etc/modprobe.conf"
+fi
