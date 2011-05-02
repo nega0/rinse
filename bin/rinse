@@ -45,6 +45,8 @@ rinse - RPM Installation Entity.
    --list-distributions  Show installable distributions.
    --print-uris          Only show the RPMs which should be downloaded.
                          default files in /usr/lib/rinse/$distro
+   --verbose             Enable verbose output.
+
 =cut
 
 
@@ -84,6 +86,9 @@ Read the manual for this script.
 
 =item B<--print-uris>
 Only show the files we would download, don't actually do so.
+
+=item B<--verbose>
+Enable verbose output.
 
 =item B<--version>
 Show the version number and exit.
@@ -155,7 +160,7 @@ Show the version number and exit.
 
 =head1 LICENSE
 
-Copyright (c) 2007-2008 by Steve Kemp.  All rights reserved.
+Copyright (c) 2007-2010 by Steve Kemp.  All rights reserved.
 
 This module is free software;
 you can redistribute it and/or modify it under
