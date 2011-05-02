@@ -4,7 +4,7 @@ Section: admin
 Priority: extra
 Standards-Version: 3.9.1.0
 Build-Depends: debhelper (>= 4.0.0)
-Homepage: http://xen-tools.org/software/rinse
+Homepage: http://www.steve.org.uk/Software/rinse/
 Vcs-Hg: http://rinse.repository.steve.org.uk/
 Vcs-Browser: http://rinse.repository.steve.org.uk/
 
