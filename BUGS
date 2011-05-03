@@ -3,7 +3,13 @@
 Reporting Bugs
 --------------
 
-  To report a bug please use the xen-tools mailing list:
+  I prefer a bug report to the Debian bug tracking system (BTS).
+  Use the tool reportbug or read the instructions at
+
+        http://bugs.debian.org
+
+
+  You may also use the xen-tools mailing list:
 
         http://xen-tools.org/lists/
 
@@ -11,5 +17,5 @@ Reporting Bugs
  and a test case would be a useful bonus.
 
 
-Steve
+Thomas
 --
