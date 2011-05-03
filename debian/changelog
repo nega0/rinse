@@ -1,10 +1,10 @@
-rinse (1.8-1) unstable; urgency=low
+rinse (1.8-1~rc2) unstable; urgency=low
 
   * centos-5.packages: add missing lib (closes: #623387)
   * centos-5/post-install.sh: install modprobe.conf (closes: #588030)
   * new url's for fedora 8-10 (closes: #573390)
   
- -- Thomas Lange <lange@debian.org>  Sun, 01 May 2011 13:16:51 +0200
+ -- Thomas Lange <lange@debian.org>  Mon, 02 May 2011 18:02:02 +0200
 
 rinse (1.7-2) unstable; urgency=high
 
