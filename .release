@@ -32,4 +32,4 @@ version=.version
 #
 #  Upload location.
 #
-upload=steve@www.xen-tools.org:/home/www/www.xen-tools.org/htdocs/software/rinse/
+upload=s-steve@ssh.steve.org.uk:htdocs/Software/rinse/
