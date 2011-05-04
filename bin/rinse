@@ -873,6 +873,10 @@ sub downloadPackagesToDirectory
             {
                 $arch = 'x86_64';
             }
+            if ( $CONFIG{ 'arch' } eq 'i386' )
+            {
+                $arch = 'i386|i686';
+            }
 
             if ( $#remainder_parts != 2 ||
                  $remainder_parts[0] ne '' ||
