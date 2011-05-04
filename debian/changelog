@@ -1,12 +1,13 @@
-rinse (1.8-1~rc5) unstable; urgency=low
+rinse (1.8-1~rc6) unstable; urgency=low
 
   * centos-5.packages: add missing lib (closes: #623387)
   * centos-5/post-install.sh: install modprobe.conf (closes: #588030)
   * new url's for fedora 8-10 (closes: #573390)
   * add Scientific Linux Cern 5 support (closes: #620081)
+  * add SLC 6 support
   * add support for packages with i686 in their names (closes: #623474)
   
- -- Thomas Lange <lange@debian.org>  Wed, 04 May 2011 17:55:57 +0200
+ -- Thomas Lange <lange@debian.org>  Wed, 04 May 2011 18:06:48 +0200
 
 rinse (1.7-2) unstable; urgency=high
 
