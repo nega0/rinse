@@ -17,7 +17,6 @@ use Test::More qw( no_plan );
 my $dir = undef;
 
 $dir = "./bin/"  if ( -d "./bin/" );
-$dir = "../bin/" if ( -d "../bin/" );
 
 plan skip_all => "No bin directory found" if (!defined( $dir ) );
 
