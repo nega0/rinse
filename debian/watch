@@ -11,5 +11,4 @@ version=3
 #  The link to the download location, followed by the regular expression
 # to match release tarballs.
 #
-http://xen-tools.org/software/rinse/releases.html \
-   rinse-([\d\.]+)\.tar\.gz
+http://www.steve.org.uk/Software/rinse/rinse-([\d\.]+)\.tar\.gz
