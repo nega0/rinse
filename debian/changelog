@@ -1,3 +1,10 @@
+rinse (1.9-1) unstable; urgency=low
+
+  * add CentOS 6 support
+  * add RHEL 5 support (closes: #632959)
+
+ -- Thomas Lange <lange@debian.org>  Mon, 18 Jul 2011 14:59:10 +0200
+
 rinse (1.8.1-1) unstable; urgency=low
 
   * add missing file slc-6.packages
