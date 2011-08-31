@@ -1,6 +1,7 @@
 rinse (1.9.1) unstable; urgency=low
 
-  * add missing package for ContOS 6 (closes: 635645)
+  * add missing package for CentOS and SLC 6 (closes: 635645)
+  * rinse.conf: fix wrong URL (closes: #635639)  
 
  -- Thomas Lange <lange@debian.org>  Wed, 31 Aug 2011 10:43:38 +0200
 
