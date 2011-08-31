@@ -76,6 +76,8 @@ nss-util
 nspr
 openssl
 pam
+passwd
+libuser
 pcre
 popt
 procps
