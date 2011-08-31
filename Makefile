@@ -10,7 +10,7 @@
 #  Only used to build distribution tarballs.
 #
 DIST_PREFIX = ${TMP}
-VERSION     = 1.9
+VERSION     = 1.9.1
 BASE        = rinse
 PREFIX      =
 
