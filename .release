@@ -22,7 +22,7 @@ pattern=rinse-[0-9].[0-9]*.tar.gz*
 #
 #  Pattern for our GPG-signature.
 #
-signature=rinse-[0-9].[0-9].tar.gz.asc
+signature=rinse-[0-9].[0-9]*.tar.gz.asc
 
 #
 #  Version number
