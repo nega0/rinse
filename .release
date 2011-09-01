@@ -17,7 +17,7 @@ preupload="make release"
 #
 #  Pattern for our release tarball.
 #
-pattern=rinse-[0-9].[0-9].tar.gz*
+pattern=rinse-[0-9].[0-9]*.tar.gz*
 
 #
 #  Pattern for our GPG-signature.
