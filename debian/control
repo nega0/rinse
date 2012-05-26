@@ -2,7 +2,7 @@ Source: rinse
 Maintainer: Thomas Lange <lange@debian.org>
 Section: admin
 Priority: extra
-Standards-Version: 3.9.1.0
+Standards-Version: 3.9.3
 Build-Depends: debhelper (>= 4.0.0)
 Homepage: http://www.steve.org.uk/Software/rinse/
 Vcs-Hg: http://rinse.repository.steve.org.uk/

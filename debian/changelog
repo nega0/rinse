@@ -3,6 +3,7 @@ rinse (1.10-1) unstable; urgency=low
   * add support for opensuse 12.1, Thanks to Rune Darrud for the patch
     Closes: #661932
   * README: list all supported distributions Closes: #661934
+  * update Standards-Version, no changes needed
 
  -- Thomas Lange <lange@debian.org>  Sat, 26 May 2012 13:32:43 +0200
 
