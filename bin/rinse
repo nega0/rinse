@@ -42,7 +42,7 @@ rinse - RPM Installation Entity.
                          (Default is /etc/rinse/rinse.conf)
    --pkgs-dir            Specify a different directory containing
                          <distribution>.packages files.
-   --mirror              Specify the URL of the mirror
+   --mirror              Specify the URL of the mirror.
                          (Default is to read it from /etc/rinse/rinse.conf)
    --list-distributions  Show installable distributions.
    --print-uris          Only show the RPMs which should be downloaded.
