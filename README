@@ -38,7 +38,7 @@ Supported Distributions
      *  CentOS
      *  Scientific Linux CERN
      *  Fedora Core
-     *  Opensuse
+     *  OpenSUSE
      *  RHEL
 
 For a complete list use: rinse --list-distributions
