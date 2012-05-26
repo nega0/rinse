@@ -34,7 +34,7 @@ rinse - RPM Installation Entity.
 
   Misc Options:
 
-   --arch                Specify the architecture to install.
+   --arch                Specify the architecture to install. Default is i386.
    --cache               Should we use a local cache?  (Default is 1)
    --cache-dir           Specify the directory we should use for the cache.
    --clean-cache         Clean our cache of .rpm files.
@@ -58,6 +58,7 @@ rinse - RPM Installation Entity.
 
 =item B<--arch>
 Specify the architecture to install.  Valid choices are 'amd64' and 'i386' only.
+Default is i386.
 
 =item B<--add-pkg-list>
 Add a list of additional packages.
