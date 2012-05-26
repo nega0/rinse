@@ -1,3 +1,10 @@
+rinse (1.10-1) unstable; urgency=low
+
+  * add support for opensuse 12.1, Thanks to Rune Darrud for the patch
+    Closes: #661932
+
+ -- Thomas Lange <lange@debian.org>  Sat, 26 May 2012 13:12:59 +0200
+
 rinse (1.9.1-1) unstable; urgency=low
 
   * add missing package for CentOS and SLC 6 (closes: 635645)
