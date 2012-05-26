@@ -1,5 +1,6 @@
 rinse (1.10-1) unstable; urgency=low
 
+  * add option --mirror Closes: #663934
   * add support for opensuse 12.1, Thanks to Rune Darrud for the patch
     Closes: #661932
   * README: list all supported distributions Closes: #661934
