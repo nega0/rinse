@@ -1295,9 +1295,9 @@ sub copyPackageFiles
 
         #
         # if the file isn't already present in the destination then
-        # copy it there.
+        # copy it there. Copy only if source is non-empty.
         #
-        if ( !-e $dest . "/" . $file )
+        if ( !-e $dest . "/" . $file && -s "$src/$file" )
         {
             copy( $src . "/" . $file, $dest . "/" . $file );
         }

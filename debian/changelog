@@ -6,8 +6,10 @@ rinse (1.10-1) unstable; urgency=low
   * README: list all supported distributions Closes: #661934
   * update Standards-Version, no changes needed
   * rinse.conf: fix URLs of old opensuse repos Closes: #661931
+  * copy files to and from the cache only if their size is greater zero
+    Closes: #663936 
   
- -- Thomas Lange <lange@debian.org>  Sun, 27 May 2012 10:15:45 +0200
+ -- Thomas Lange <lange@debian.org>  Sun, 27 May 2012 15:38:46 +0200
 
 rinse (1.9.1-1) unstable; urgency=low
 
