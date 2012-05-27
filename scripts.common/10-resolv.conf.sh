@@ -1,10 +1,7 @@
 #!/bin/sh
 #
 #  Ensure the chroot has an /etc/resolv.conf file.
-#
-# Steve
-# --
-
+#  Add localhost entry into etc/hosts
 
 #
 #  Get the root of the chroot.
@@ -19,10 +16,15 @@ if [ ! -d "${prefix}" ]; then
   exit
 fi
 
-echo "  Creating resolv.conf"
 if [ ! -d "${prefix}/etc/" ]; then
     mkdir -p "${prefix}/etc/"
 fi
 
+if ! grep -q localhost ${prefix}/etc/hosts ; then
+    echo "  Adding localhost entry"
+    echo "127.0.0.1       localhost" >> ${prefix}/etc/hosts
+fi
+
+echo "  Creating resolv.conf"
 cp /etc/resolv.conf "${prefix}/etc/"
 

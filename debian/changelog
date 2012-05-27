@@ -1,15 +1,16 @@
 rinse (1.10-1) unstable; urgency=low
 
-  * add option --mirror Closes: #663934
-  * add support for opensuse 12.1 Closes: #661932
+  * add option --mirror closes: #663934
+  * add support for opensuse 12.1 closes: #661932
     Thanks to Rune Darrud for the patch
-  * README: list all supported distributions Closes: #661934
+  * README: list all supported distributions closes: #661934
   * update Standards-Version, no changes needed
-  * rinse.conf: fix URLs of old opensuse repos Closes: #661931
+  * rinse.conf: fix URLs of old opensuse repos closes: #661931
   * copy files to and from the cache only if their size is greater zero
-    Closes: #663936 
+    closes: #663936 
+  * 10-resolv.conf.sh: add localhost to etc/hosts closes: #633079
   
- -- Thomas Lange <lange@debian.org>  Sun, 27 May 2012 15:38:46 +0200
+ -- Thomas Lange <lange@debian.org>  Sun, 27 May 2012 16:39:10 +0200
 
 rinse (1.9.1-1) unstable; urgency=low
 
