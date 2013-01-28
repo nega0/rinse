@@ -3,8 +3,9 @@ rinse (2.0.1-1) unstable; urgency=low
   * create missing random devices, thanks to Dan Kegel closes: #685640
   * fix broken fedora urls, add urls for fedora 11-14 closes: #693353
   * Makefile: version++
+  * copyright, bin/rinse: year++
 
- -- Thomas Lange <lange@debian.org>  Mon, 28 Jan 2013 17:12:59 +0100
+ -- Thomas Lange <lange@debian.org>  Mon, 28 Jan 2013 17:19:05 +0100
 
 rinse (2.0-1) unstable; urgency=low
 
