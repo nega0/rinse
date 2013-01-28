@@ -1,3 +1,9 @@
+rinse (2.0.1-1) unstable; urgency=low
+
+  * create missing random devices, thanks to Dan Kegel closes: #685640
+
+ -- Thomas Lange <lange@debian.org>  Mon, 28 Jan 2013 16:16:22 +0100
+
 rinse (2.0-1) unstable; urgency=low
 
   * make --arch mandatory

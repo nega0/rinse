@@ -35,3 +35,12 @@ if [ !  -e "${prefix}/dev/zero" ]; then
     mknod -m 666 "${prefix}/dev/zero" c 1 5
 fi
 
+echo "  Creating random devices in /dev"
+if [ !  -e "${prefix}/dev/random" ]; then
+    mknod -m 666 "${prefix}/dev/random" c 1 8
+    chown root:root "${prefix}/dev/random"
+fi
+if [ !  -e "${prefix}/dev/urandom" ]; then
+    mknod -m 666 "${prefix}/dev/urandom" c 1 9
+    chown root:root "${prefix}/dev/urandom"
+fi
