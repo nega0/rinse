@@ -79,9 +79,9 @@ mount -o bind /proc ${prefix}/proc
 echo "  Moving /bin/, /sbin/, /lib/ to /usr/"
 for dir in bin sbin lib lib64; do
     if [ -d ${prefix}/${dir} ]; then
-	cp -a ${prefix}/${dir}/* ${prefix}/usr/${dir}/
-	rm -rf ${prefix}/${dir}
-	ln -s usr/${dir} ${prefix}/${dir}
+        cp -a ${prefix}/${dir}/* ${prefix}/usr/${dir}/
+        rm -rf ${prefix}/${dir}
+        ln -s usr/${dir} ${prefix}/${dir}
     fi
 done
 

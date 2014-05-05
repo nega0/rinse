@@ -60,8 +60,8 @@ gpgcheck=1
 EOF
 
 if [ $ARCH = "i386" ] ; then
-	echo "  Setting architecture to i686"
-	sed -i 's/\(# \)\?arch = .*/arch = i686/' ${prefix}/etc/zypp/zypp.conf
+        echo "  Setting architecture to i686"
+        sed -i 's/\(# \)\?arch = .*/arch = i686/' ${prefix}/etc/zypp/zypp.conf
 fi
 
 

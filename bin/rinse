@@ -1008,38 +1008,38 @@ sub findMirrorContents
         while ( $line =~ /href=\"([^\"]+)\">(.*)/i )
         {
             my $link = $1;
-	    $line = $2;
+            $line = $2;
 
             # initial character + "/" link is sub index.
-	    if ( $link =~ /^[0-9a-z]\/$/i ) {
-		push @sub_indexes, $link;
-		next;
-	    }
+            if ( $link =~ /^[0-9a-z]\/$/i ) {
+                push @sub_indexes, $link;
+                next;
+            }
 
             # RPM is found.
-	    if ( $link =~ /\.rpm$/i ) {
-		$have_rpm = 1;
-		last;
-	    }
+            if ( $link =~ /\.rpm$/i ) {
+                $have_rpm = 1;
+                last;
+            }
         }
 
-	if ( $have_rpm ) {
-	    last;
-	}
+        if ( $have_rpm ) {
+            last;
+        }
     }
 
     if ( $have_rpm ) {
-	return findMirrorContentsInPage($mirror);
+        return findMirrorContentsInPage($mirror);
     } else {
-	my %links;
+        my %links;
 
-	# Collect all RPM links in sub index pages.
-	foreach my $sub_index ( @sub_indexes )
-	{
-	    %links = ( %links, findMirrorContentsInPage("$mirror/$sub_index") );
-	}
+        # Collect all RPM links in sub index pages.
+        foreach my $sub_index ( @sub_indexes )
+        {
+            %links = ( %links, findMirrorContentsInPage("$mirror/$sub_index") );
+        }
 
-	return (%links);
+        return (%links);
     }
 }
 
