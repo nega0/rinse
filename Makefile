@@ -102,6 +102,12 @@ release: clean
 	echo $(VERSION) > .version
 
 
+#
+#  Make .deb
+#
+deb: clean
+	debuild -i -us -uc -b
+
 
 #
 #  Run the test suite.  (Minimal.)
