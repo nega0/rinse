@@ -16,6 +16,7 @@ rm -f ${prefix}/*.rpm
 touch ${prefix}/etc/mtab
 
 echo "  Bootstrapping yum"
+chroot ${prefix} /sbin/MAKEDEV -x urandom
 chroot ${prefix} /usr/bin/yum -y install yum vim-minimal dhclient 2>/dev/null
 
 echo "  cleaning up..."
