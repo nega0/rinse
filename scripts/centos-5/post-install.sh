@@ -26,6 +26,7 @@ done
 #  Run "yum install yum".
 #
 echo "  Bootstrapping yum"
+chroot ${prefix} /sbin/MAKEDEV -x urandom
 chroot ${prefix} /usr/bin/yum -y install yum vim-minimal dhclient 2>/dev/null
 
 #
