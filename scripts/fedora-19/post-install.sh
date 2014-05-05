@@ -89,7 +89,7 @@ echo "  Priming the yum cache"
 if [ ! -d "${prefix}/var/cache/yum/core/packages/" ]; then
     mkdir -p ${prefix}/var/cache/yum/core/packages
 fi
-cp /var/cache/rinse/fedora-18.$ARCH/* ${prefix}/var/cache/yum/core/packages/
+cp /var/cache/rinse/fedora-19.$ARCH/* ${prefix}/var/cache/yum/core/packages/
 
 echo "  Bootstrapping yum"
 chroot ${prefix} /usr/sbin/ldconfig
