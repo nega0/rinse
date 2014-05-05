@@ -33,6 +33,9 @@ sub checkFile
     # We don't care about directories
     return if ( ! -f $file );
 
+    # Nor VCS files/dirs
+    return if ( $file =~ /^\.\/\.(hg|git|svn)/ );
+
     # `modules.sh` is a false positive.
     return if ( $file =~ /modules.sh$/ );
 

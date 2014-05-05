@@ -37,6 +37,9 @@ sub checkFile
     # Nor about files which start with ./debian/
     return if ( $file =~ /^\.\/debian\// );
 
+    # Nor VCS files/dirs
+    return if ( $file =~ /^\.\/\.(hg|git|svn)/ );
+
     # See if it is a shell/perl file.
     my $isShell        = 0;
     my $isPerl        = 0;
