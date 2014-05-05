@@ -929,7 +929,7 @@ sub downloadPackagesToDirectory
                 # download - unless already present.
                 if ( !-e "$dir/$key" )
                 {
-                    system("wget --quiet -O $dir/$key $mirror/$key");
+                    system("wget --quiet -O $dir/$key $links{ $key }");
                 }
             }
             $CONFIG{ 'verbose' } && print "+Download $package\n";
@@ -985,6 +985,83 @@ sub findMirrorContents
     my $index = downloadURL($mirror);
 
     #
+    #  Now we want to store all the sub index page links we've found.
+    #
+    my @sub_indexes;
+
+    #
+    #  Now we want to know whether the page has RPM.
+    #
+    my $have_rpm = 0;
+
+    #
+    # Parse the HTML.
+    #
+    foreach my $line ( split( /\n/, $index ) )
+    {
+
+        #
+        #  Look for contents of the form:
+        #
+        #     href="...">
+        #
+        while ( $line =~ /href=\"([^\"]+)\">(.*)/i )
+        {
+            my $link = $1;
+	    $line = $2;
+
+            # initial character + "/" link is sub index.
+	    if ( $link =~ /^[0-9a-z]\/$/i ) {
+		push @sub_indexes, $link;
+		next;
+	    }
+
+            # RPM is found.
+	    if ( $link =~ /\.rpm$/i ) {
+		$have_rpm = 1;
+		last;
+	    }
+        }
+
+	if ( $have_rpm ) {
+	    last;
+	}
+    }
+
+    if ( $have_rpm ) {
+	return findMirrorContentsInPage($mirror);
+    } else {
+	my %links;
+
+	# Collect all RPM links in sub index pages.
+	foreach my $sub_index ( @sub_indexes )
+	{
+	    %links = ( %links, findMirrorContentsInPage("$mirror/$sub_index") );
+	}
+
+	return (%links);
+    }
+}
+
+=begin doc
+
+  Find the RPM links which are contained in the given HTML
+ page.
+
+=end doc
+
+=cut
+
+sub findMirrorContentsInPage
+{
+    my ($mirror) = (@_);
+
+    #
+    #  Download
+    #
+    my $index = downloadURL($mirror);
+
+    #
     #  Now we want to store all the links we've found.
     #
     my %links;
@@ -1015,7 +1092,7 @@ sub findMirrorContents
             $link = uri_unescape($link);
 
             # store
-            $links{ $link } = 1;
+            $links{ $link } = "$mirror/$link";
         }
     }
 
